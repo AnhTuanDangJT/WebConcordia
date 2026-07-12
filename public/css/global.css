@@ -421,7 +421,7 @@ textarea.form-control {
     gap: 1.4rem;
 }
 
-.nav-links a {
+.nav-links a:not(.btn) {
     position: relative;
     font-weight: 600;
     color: var(--color-text);

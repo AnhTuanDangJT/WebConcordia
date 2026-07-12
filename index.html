@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="Discover and manage campus events with CampusConnect."
+    >
+
+    <title>CampusConnect | Smart Campus Event Planner</title>
+
+    <link rel="stylesheet" href="public/css/global.css">
+    <link rel="stylesheet" href="public/css/public-pages.css">
+
+    <script src="public/js/main.js" defer></script>
+</head>
+
+<body>
+    <!-- Shared header -->
+    <header class="site-header">
+        <div class="container navbar">
+            <a href="index.html" class="site-logo">
+                Campus<span>Connect</span>
+            </a>
+
+            <button
+                class="nav-toggle"
+                type="button"
+                aria-label="Open navigation menu"
+                aria-expanded="false"
+                aria-controls="primary-navigation"
+            >
+                ☰
+            </button>
+
+            <nav
+                id="primary-navigation"
+                class="primary-navigation"
+                aria-label="Main navigation"
+            >
+                <ul class="nav-links">
+                    <li>
+                        <a href="index.html" class="active">Home</a>
+                    </li>
+
+                    <li>
+                        <a href="views/events.html">Events</a>
+                    </li>
+
+                    <li>
+                        <a href="views/about.html">About</a>
+                    </li>
+
+                    <li>
+                        <a href="views/contact.html">Contact</a>
+                    </li>
+
+                    <li>
+                        <a href="views/login.html">Login</a>
+                    </li>
+
+                    <li>
+                        <a
+                            href="views/register.html"
+                            class="btn btn-primary"
+                        >
+                            Get Started
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+    <!-- Hero section -->
+    <section class="hero">
+        <div class="container hero-layout">
+            <div class="hero-content">
+                <span class="hero-label">
+                    Your campus, all in one place
+                </span>
+
+                <h1>
+                    Discover events that make campus life
+                    <span>more meaningful.</span>
+                </h1>
+
+                <p class="hero-description">
+                    Find workshops, career fairs, club activities,
+                    sports events, guest lectures, and more. Register
+                    and manage your campus schedule from one place.
+                </p>
+
+                <div class="hero-actions">
+                    <a
+                        href="views/events.html"
+                        class="btn btn-primary"
+                    >
+                        Browse Events
+                    </a>
+
+                    <a
+                        href="views/register.html"
+                        class="btn btn-secondary"
+                    >
+                        Create an Account
+                    </a>
+                </div>
+
+                <div class="hero-statistics">
+                    <div>
+                        <strong>40+</strong>
+                        <span>Campus Events</span>
+                    </div>
+
+                    <div>
+                        <strong>12</strong>
+                        <span>Event Categories</span>
+                    </div>
+
+                    <div>
+                        <strong>500+</strong>
+                        <span>Student Participants</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hero-event-card">
+                <div class="hero-card-heading">
+                    <span class="badge badge-open">Open</span>
+                    <span>Featured this week</span>
+                </div>
+
+                <div class="hero-date">
+                    <span class="hero-date-month">AUG</span>
+                    <strong>05</strong>
+                </div>
+
+                <h2>Web Development Workshop</h2>
+
+                <p>
+                    Learn modern HTML, CSS, and JavaScript techniques
+                    with the Computer Science Society.
+                </p>
+
+                <ul class="event-information">
+                    <li>
+                        <strong>Time:</strong> 1:00 PM – 3:00 PM
+                    </li>
+
+                    <li>
+                        <strong>Location:</strong> Hall Building
+                    </li>
+
+                    <li>
+                        <strong>Organizer:</strong> CS Society
+                    </li>
+                </ul>
+
+                <a
+                    href="views/event-details.html"
+                    class="btn btn-primary"
+                >
+                    View Event
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured events -->
+    <section class="page-section featured-events">
+        <div class="container">
+            <div class="section-heading">
+                <span class="section-label">Do not miss out</span>
+                <h2>Featured Campus Events</h2>
+
+                <p>
+                    Explore some of the upcoming opportunities available
+                    to students across campus.
+                </p>
+            </div>
+
+            <div class="grid grid-3">
+                <article class="card event-card">
+                    <div class="event-card-top">
+                        <span class="event-category">
+                            Academic Workshop
+                        </span>
+
+                        <span class="badge badge-open">Open</span>
+                    </div>
+
+                    <div class="event-card-date">
+                        August 5, 2026
+                    </div>
+
+                    <h3 class="card-title">
+                        Web Development Workshop
+                    </h3>
+
+                    <p class="card-text">
+                        Learn practical techniques for creating modern,
+                        responsive websites.
+                    </p>
+
+                    <div class="event-meta">
+                        <span>1:00 PM – 3:00 PM</span>
+                        <span>Hall Building</span>
+                    </div>
+
+                    <a
+                        href="views/event-details.html"
+                        class="event-link"
+                    >
+                        View details →
+                    </a>
+                </article>
+
+                <article class="card event-card">
+                    <div class="event-card-top">
+                        <span class="event-category">
+                            Career Event
+                        </span>
+
+                        <span class="badge badge-full">Full</span>
+                    </div>
+
+                    <div class="event-card-date">
+                        August 12, 2026
+                    </div>
+
+                    <h3 class="card-title">
+                        Campus Career Fair
+                    </h3>
+
+                    <p class="card-text">
+                        Connect with employers and learn about internship
+                        and career opportunities.
+                    </p>
+
+                    <div class="event-meta">
+                        <span>10:00 AM – 4:00 PM</span>
+                        <span>EV Building</span>
+                    </div>
+
+                    <a
+                        href="views/event-details.html"
+                        class="event-link"
+                    >
+                        View details →
+                    </a>
+                </article>
+
+                <article class="card event-card">
+                    <div class="event-card-top">
+                        <span class="event-category">
+                            Networking Event
+                        </span>
+
+                        <span class="badge badge-open">Open</span>
+                    </div>
+
+                    <div class="event-card-date">
+                        August 18, 2026
+                    </div>
+
+                    <h3 class="card-title">
+                        Student Networking Evening
+                    </h3>
+
+                    <p class="card-text">
+                        Meet students, alumni, and professionals from
+                        different academic programs.
+                    </p>
+
+                    <div class="event-meta">
+                        <span>5:30 PM – 8:00 PM</span>
+                        <span>John Molson Building</span>
+                    </div>
+
+                    <a
+                        href="views/event-details.html"
+                        class="event-link"
+                    >
+                        View details →
+                    </a>
+                </article>
+            </div>
+
+            <div class="section-action">
+                <a
+                    href="views/events.html"
+                    class="btn btn-secondary"
+                >
+                    View All Events
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Categories -->
+    <section class="page-section categories-section">
+        <div class="container">
+            <div class="section-heading">
+                <span class="section-label">Explore your interests</span>
+                <h2>Event Categories</h2>
+
+                <p>
+                    Browse events based on your academic, professional,
+                    social, and personal interests.
+                </p>
+            </div>
+
+            <div class="category-grid">
+                <a href="views/events.html" class="category-card">
+                    <span class="category-icon">AW</span>
+                    <h3>Academic Workshops</h3>
+                    <p>Develop new academic and technical skills.</p>
+                </a>
+
+                <a href="views/events.html" class="category-card">
+                    <span class="category-icon">CE</span>
+                    <h3>Career Events</h3>
+                    <p>Explore internships and career opportunities.</p>
+                </a>
+
+                <a href="views/events.html" class="category-card">
+                    <span class="category-icon">CA</span>
+                    <h3>Club Activities</h3>
+                    <p>Connect with student clubs and communities.</p>
+                </a>
+
+                <a href="views/events.html" class="category-card">
+                    <span class="category-icon">SE</span>
+                    <h3>Sports Events</h3>
+                    <p>Stay active and support campus teams.</p>
+                </a>
+
+                <a href="views/events.html" class="category-card">
+                    <span class="category-icon">CU</span>
+                    <h3>Cultural Events</h3>
+                    <p>Celebrate cultures and campus diversity.</p>
+                </a>
+
+                <a href="views/events.html" class="category-card">
+                    <span class="category-icon">NE</span>
+                    <h3>Networking Events</h3>
+                    <p>Build meaningful academic connections.</p>
+                </a>
+            </div>
+        </div>
+    </section>
+</main>
+
+    <!-- Shared footer -->
+    <footer class="site-footer">
+        <div class="container footer-content">
+            <div class="footer-brand">
+                <h2>
+                    Campus<span>Connect</span>
+                </h2>
+
+                <p>
+                    Helping students discover, register for, and manage
+                    campus events in one central location.
+                </p>
+            </div>
+
+            <div class="footer-column">
+                <h3>Quick Links</h3>
+
+                <a href="index.html">Home</a>
+                <a href="views/events.html">Events</a>
+                <a href="views/about.html">About</a>
+                <a href="views/contact.html">Contact</a>
+            </div>
+
+            <div class="footer-column">
+                <h3>Account</h3>
+
+                <a href="views/login.html">Login</a>
+                <a href="views/register.html">Create Account</a>
+                <a href="views/profile.html">Profile</a>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <div class="container">
+                <p>
+                    &copy; 2026 CampusConnect. SOEN 287 Project.
+                </p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
