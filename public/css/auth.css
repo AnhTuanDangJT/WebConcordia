@@ -1,0 +1,184 @@
+.auth
+{
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
+}
+
+.redirect
+{
+    text-decoration: underline;
+    transition: color 0.3s;
+    &:hover
+    {
+        color: var(--color-primary);
+    }
+    &.isAdmin
+    {
+        &:hover
+        {
+            color: var(--color-secondary);
+        }
+    }
+
+}
+
+/* Decorative circles on corners of auth form*/
+.decor
+{
+    opacity: 33%;
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+
+    &.before
+    {
+        top: -175px;
+        left: -175px;
+
+        width: 350px;
+        height: 350px;
+
+        background-color: var(--color-secondary);
+
+        &.alt
+        {
+            top: inherit;
+            bottom: -175px;
+        }
+    }
+
+    &.after
+    {
+        bottom: -175px;
+        right: -175px;
+
+        width: 350px;
+        height: 350px;
+
+        background-color: var(--color-primary);
+
+        &.alt
+        {
+            bottom: inherit;
+            top: -175px;
+        }
+    }
+}
+
+/* Color change for submit button based on role */
+.btn-primary
+{
+    transition: background-color 0.3s;
+    &.isAdmin
+    {
+        background-color: var(--color-secondary);
+
+        &:hover
+        {
+            background-color: var(--color-secondary-dark);
+        }
+    }
+
+}
+
+/* Positioning to put auth elements over the decorative circles */
+
+.form-container{
+    position: relative;
+    margin-bottom: 50px;
+}
+
+.auth-header
+{
+    position: relative;
+    margin-top: 25px;
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+/* Role labels on sides of slider */
+.role
+{
+    font-size: 0.8rem;
+    font-family: var(--font-primary);
+    color: var(--color-text-light);
+    font-weight: bold;
+    transition: color 0.3s;
+
+    &.enabled.student
+    {
+        color: var(--color-primary);
+    }
+    &.enabled.admin
+    {
+        color: var(--color-secondary);
+    }
+}
+
+/* Role slider */
+
+.role-slider
+{
+    display:flex;
+    align-items: center;
+    background-color: var(--color-border);
+    border-radius: var(--radius-small);
+    width:fit-content;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 45px;
+  height: 20px;
+  margin: 10px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--color-primary);
+  transition: 0.3s;
+  border-radius: 15px;
+}
+
+.slider::before {
+  position: absolute;
+  content: "";
+  height: 13px;
+  width: 13px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: 0.3s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: var(--color-secondary); 
+}
+
+input:checked + .slider::before {
+  transform: translateX(25px);
+}
+
+.selected
+{
+    background-color: var(--color-secondary);
+
+    &:hover
+    {
+        background-color: var(--color-secondary-dark);
+    }
+}
