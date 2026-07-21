@@ -1,0 +1,102 @@
+/* Enables horizontal overflow scrolling */
+/* 1. Ensure the container handles horizontal overflow */
+.scroll-container {
+    overflow-x: auto !important;
+    display: block !important;
+    width: 100% !important;
+    padding-bottom: 15px;
+}
+
+/* 2. Break the strict 3-column constraint and force items into a single row */
+.scroll-container .grid-3 {
+    display: flex !important;           /* Switches from grid to flex to force a single row */
+    flex-wrap: nowrap !important;       /* Strictly forbids cards from wrapping to a new line */
+    gap: 20px !important;               /* Keeps a consistent gap between your event cards */
+}
+
+/* 3. Stop individual event cards from shrinking or squishing */
+.scroll-container .event-card {
+    flex: 0 0 300px !important;         /* Forces every card to be exactly 300px wide, no shrinking */
+}
+h1,h2,h3,h4 {
+    margin-bottom: 0px;
+}
+
+.page-header {
+    padding-top: 20px;
+}
+
+.container {
+    margin-bottom: 1rem;
+}
+
+/*For events.html events gallery  */
+.event-controls {
+    padding: 1.5rem;
+    margin-bottom: 2.5rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 1rem;
+    box-shadow: var(--shadow-card);
+}
+/* Flexbox layout for event actions */
+.event-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Pushes items to opposite sides */
+  width: 100%;                    /* Ensures container spans the full card width */
+}
+
+
+.search-container {
+    margin-bottom: 1.25rem;
+}
+
+.search-container input {
+    width: 100%;
+}
+
+.filter-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) auto;
+    gap: 1rem;
+    align-items: end;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.results-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+}
+
+@media (max-width: 650px) {
+    .filter-grid,
+    .event-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .results-heading {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}
+
+/* Styling for the compact icon button */
+.cancel-icon-btn {
+    background: none;
+    border: none;
+    color: #af9c9c;
+    font-size: 15px;
+    cursor: pointer;
+    line-height: 1;
+    padding: 4px;
+    align-self: right;
+}
