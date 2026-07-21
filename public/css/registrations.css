@@ -1,0 +1,89 @@
+/* Registartion Page*/
+
+
+.registration-list {
+    margin-top: 2rem;
+}
+
+
+.registration-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    min-height: 280px;
+
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+
+.registration-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-medium);
+}
+
+
+.registration-card strong {
+    color: var(--color-text);
+}
+
+
+.registration-card .btn {
+    align-self: flex-start;
+}
+/* Upcoming events */
+
+
+.event-list {
+    margin-top: 2rem;
+}
+
+
+.event-card {
+    min-height: 280px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+
+.event-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-medium);
+}
+
+
+.event-card .btn {
+    align-self: flex-start;
+}
+/* Participation Progress */
+
+
+.progress-container {
+    margin-top: 1.5rem;
+}
+
+
+.progress-bar {
+    width: 100%;
+    height: 18px;
+
+    background-color: var(--color-border);
+
+    border-radius: var(--radius-medium);
+
+    overflow: hidden;
+}
+
+
+.progress-fill {
+    width: 50%;
+    height: 100%;
+
+    background-color: var(--color-primary);
+
+    border-radius: var(--radius-medium);
+}
