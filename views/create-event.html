@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Event - Admin</title>
+    <link rel="stylesheet" href="../public/css/global.css">
+    <link rel="stylesheet" href="../public/css/admin.css">
+</head>
+<body>
+
+    <header class="site-header">
+        <div class="container navbar">
+            <a href="../index.html" class="site-logo">
+                Campus<span>Connect</span>
+            </a>
+
+            <button
+                class="nav-toggle"
+                type="button"
+                aria-label="Open navigation menu"
+                aria-expanded="false"
+                aria-controls="primary-navigation"
+            >
+                ☰
+            </button>
+
+            <nav
+                id="primary-navigation"
+                class="primary-navigation"
+                aria-label="Main navigation"
+            >
+                <ul class="nav-links">
+                    <li>
+                        <a href="../index.html">Home</a>
+                    </li>
+
+                    <li>
+                        <a href="events.html">Events</a>
+                    </li>
+
+                    <li>
+                        <a href="about.html">About</a>
+                    </li>
+
+                    <li>
+                        <a href="contact.html">Contact</a>
+                    </li>
+
+                    <li>
+                        <a href="admin-dashboard.html">Dashboard</a>
+                    </li>
+
+                    <li>
+                        <a href="create-event.html" class="active">Create Event</a>
+                    </li>
+
+                    <li>
+                        <a href="manage-events.html">Manage Events</a>
+                    </li>
+
+                    <li>
+                        <a href="login.html" class="btn btn-primary">Logout</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="admin-container">
+        <div class="form-header">
+            <h1>Create New Campus Event</h1>
+            <p>Fill out the details below to publish a new event for students.</p>
+        </div>
+
+        <section class="form-card">
+            <form action="#" method="POST" class="event-form">
+                
+                <div class="form-group">
+                    <label for="event-name">Event Name</label>
+                    <input type="text" id="event-name" name="event-name" placeholder="e.g. Annual Hackathon" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="event-date">Date</label>
+                        <input type="date" id="event-date" name="event-date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="event-time">Time</label>
+                        <input type="time" id="event-time" name="event-time" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="location">Campus Location</label>
+                    <select id="location" name="location">
+                        <option value="sgw">SGW Campus (Downtown)</option>
+                        <option value="loyola">Loyola Campus</option>
+                        <option value="online">Online / Virtual</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="capacity">Maximum Capacity</label>
+                    <input type="number" id="capacity" name="capacity" min="1" placeholder="e.g. 50" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Event Description</label>
+                    <textarea id="description" name="description" rows="5" placeholder="Describe the event goals and details..."></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">Publish Event</button>
+                    <button type="reset" class="btn-secondary">Clear Form</button>
+                </div>
+
+            </form>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-content">
+            <div class="footer-brand">
+                <h2>
+                    Campus<span>Connect</span>
+                </h2>
+
+                <p>
+                    Helping students discover, register for, and manage
+                    campus events in one central location.
+                </p>
+            </div>
+
+            <div class="footer-column">
+                <h3>Quick Links</h3>
+
+                <a href="../index.html">Home</a>
+                <a href="events.html">Events</a>
+                <a href="about.html">About</a>
+                <a href="contact.html">Contact</a>
+            </div>
+
+            <div class="footer-column">
+                <h3>Account</h3>
+
+                <a href="login.html">Login</a>
+                <a href="register.html">Create Account</a>
+                <a href="profile.html">Profile</a>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <div class="container">
+                <p>
+                    &copy; 2026 CampusConnect. SOEN 287 Project.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
