@@ -141,16 +141,6 @@ Then open `http://localhost:8000` in your browser.
 | Member 4 — Disha | My registrations, upcoming events, `registrations.css`, `registrations.js` |
 | Member 5 — Tiago | Admin pages, integration, testing, `admin.css` |
 
-## Planned for Deliverable 2
-
-- Node.js backend and database integration
-- Real authentication with password hashing
-- Role-based access control
-- Shared event data via API instead of hard-coded content
-- Server-side validation and event capacity handling
-- Persistent registrations and attendance tracking
-- Admin statistics, registration management, and attendance features
-
 ## Notes
 
 - Event data is currently hard-coded for frontend demonstration.
