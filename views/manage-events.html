@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Events - Admin</title>
+    <link rel="stylesheet" href="../public/css/global.css">
+    <link rel="stylesheet" href="../public/css/admin.css">
+</head>
+<body>
+
+    <header class="site-header">
+        <div class="container navbar">
+            <a href="../index.html" class="site-logo">
+                Campus<span>Connect</span>
+            </a>
+
+            <button
+                class="nav-toggle"
+                type="button"
+                aria-label="Open navigation menu"
+                aria-expanded="false"
+                aria-controls="primary-navigation"
+            >
+                ☰
+            </button>
+
+            <nav
+                id="primary-navigation"
+                class="primary-navigation"
+                aria-label="Main navigation"
+            >
+                <ul class="nav-links">
+                    <li>
+                        <a href="../index.html">Home</a>
+                    </li>
+
+                    <li>
+                        <a href="events.html">Events</a>
+                    </li>
+
+                    <li>
+                        <a href="about.html">About</a>
+                    </li>
+
+                    <li>
+                        <a href="contact.html">Contact</a>
+                    </li>
+
+                    <li>
+                        <a href="admin-dashboard.html">Dashboard</a>
+                    </li>
+
+                    <li>
+                        <a href="create-event.html">Create Event</a>
+                    </li>
+
+                    <li>
+                        <a href="manage-events.html" class="active">Manage Events</a>
+                    </li>
+
+                    <li>
+                        <a href="login.html" class="btn btn-primary">Logout</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="admin-container">
+        <div class="page-header">
+            <h1>Manage Campus Events</h1>
+            <p>Review, edit, or cancel scheduled university events.</p>
+        </div>
+
+        <div class="filter-bar">
+            <input type="text" placeholder="Search events by name or organizer...">
+            <select>
+                <option value="all">All Campuses</option>
+                <option value="sgw">SGW (Downtown)</option>
+                <option value="loyola">Loyola</option>
+            </select>
+        </div>
+
+        <section class="management-card">
+            <div class="table-responsive">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Event Name</th>
+                            <th>Campus</th>
+                            <th>Date & Time</th>
+                            <th>Capacity Status</th>
+                            <th>Current State</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Tech Career Fair 2026</strong></td>
+                            <td>SGW (Downtown)</td>
+                            <td>July 24, 2026 @ 10:00 AM</td>
+                            <td>120 / 150 Registered</td>
+                            <td><span class="status-badge active">Active</span></td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn-action edit">Edit</button>
+                                    <button class="btn-action cancel">Cancel</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>AI Workshop</strong></td>
+                            <td>Loyola Campus</td>
+                            <td>July 28, 2026 @ 2:00 PM</td>
+                            <td>50 / 50 (Full)</td>
+                            <td><span class="status-badge full">Full</span></td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn-action edit">Edit</button>
+                                    <button class="btn-action cancel">Cancel</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Concordia Concert Night</strong></td>
+                            <td>Loyola Campus</td>
+                            <td>Aug 02, 2026 @ 7:00 PM</td>
+                            <td>0 / 200 Registered</td>
+                            <td><span class="status-badge cancelled">Cancelled</span></td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn-action edit">Edit</button>
+                                    <button class="btn-action delete">Delete</button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-content">
+            <div class="footer-brand">
+                <h2>
+                    Campus<span>Connect</span>
+                </h2>
+
+                <p>
+                    Helping students discover, register for, and manage
+                    campus events in one central location.
+                </p>
+            </div>
+
+            <div class="footer-column">
+                <h3>Quick Links</h3>
+
+                <a href="../index.html">Home</a>
+                <a href="events.html">Events</a>
+                <a href="about.html">About</a>
+                <a href="contact.html">Contact</a>
+            </div>
+
+            <div class="footer-column">
+                <h3>Account</h3>
+
+                <a href="login.html">Login</a>
+                <a href="register.html">Create Account</a>
+                <a href="profile.html">Profile</a>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <div class="container">
+                <p>
+                    &copy; 2026 CampusConnect. SOEN 287 Project.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
