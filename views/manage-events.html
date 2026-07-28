@@ -4,7 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Events - Admin</title>
+    <link rel="icon" href="../public/images/favicon3.png" type="image/png" sizes="32x32">
+    <link rel="shortcut icon" href="../public/images/favicon3.png" type="image/png">
     <link rel="stylesheet" href="../public/css/global.css">
+    <link rel="stylesheet" href="../public/css/public-pages.css">
     <link rel="stylesheet" href="../public/css/admin.css">
 </head>
 <body>
@@ -31,37 +34,14 @@
                 aria-label="Main navigation"
             >
                 <ul class="nav-links">
-                    <li>
-                        <a href="../index.html">Home</a>
-                    </li>
-
-                    <li>
-                        <a href="events.html">Events</a>
-                    </li>
-
-                    <li>
-                        <a href="about.html">About</a>
-                    </li>
-
-                    <li>
-                        <a href="contact.html">Contact</a>
-                    </li>
-
-                    <li>
-                        <a href="admin-dashboard.html">Dashboard</a>
-                    </li>
-
-                    <li>
-                        <a href="create-event.html">Create Event</a>
-                    </li>
-
-                    <li>
-                        <a href="manage-events.html" class="active">Manage Events</a>
-                    </li>
-
-                    <li>
-                        <a href="login.html" class="btn btn-primary">Logout</a>
-                    </li>
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="events.html">Events</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="admin-dashboard.html">Dashboard</a></li>
+                    <li><a href="create-event.html">Create Event</a></li>
+                    <li><a href="manage-events.html" class="active">Manage Events</a></li>
+                    <li><a href="login.html" class="btn btn-primary">Logout</a></li>
                 </ul>
             </nav>
         </div>
@@ -74,8 +54,8 @@
         </div>
 
         <div class="filter-bar">
-            <input type="text" placeholder="Search events by name or organizer...">
-            <select>
+            <input type="text" class="form-control" placeholder="Search events by name or organizer...">
+            <select class="form-control">
                 <option value="all">All Campuses</option>
                 <option value="sgw">SGW (Downtown)</option>
                 <option value="loyola">Loyola</option>
@@ -83,8 +63,9 @@
         </div>
 
         <section class="management-card">
-            <div class="table-responsive">
-                <table class="admin-table">
+            <!-- Updated to match global.css table wrapper class -->
+            <div class="table-wrapper">
+                <table class="table">
                     <thead>
                         <tr>
                             <th>Event Name</th>
@@ -101,11 +82,12 @@
                             <td>SGW (Downtown)</td>
                             <td>July 24, 2026 @ 10:00 AM</td>
                             <td>120 / 150 Registered</td>
-                            <td><span class="status-badge active">Active</span></td>
+                            <!-- Updated status badge class -->
+                            <td><span class="badge badge-open">Active</span></td>
                             <td>
                                 <div class="action-buttons">
-                                    <button class="btn-action edit">Edit</button>
-                                    <button class="btn-action cancel">Cancel</button>
+                                    <button class="btn btn-secondary">Edit</button>
+                                    <button class="btn btn-outline">Cancel</button>
                                 </div>
                             </td>
                         </tr>
@@ -114,11 +96,12 @@
                             <td>Loyola Campus</td>
                             <td>July 28, 2026 @ 2:00 PM</td>
                             <td>50 / 50 (Full)</td>
-                            <td><span class="status-badge full">Full</span></td>
+                            <!-- Updated status badge class -->
+                            <td><span class="badge badge-full">Full</span></td>
                             <td>
                                 <div class="action-buttons">
-                                    <button class="btn-action edit">Edit</button>
-                                    <button class="btn-action cancel">Cancel</button>
+                                    <button class="btn btn-secondary">Edit</button>
+                                    <button class="btn btn-outline">Cancel</button>
                                 </div>
                             </td>
                         </tr>
@@ -127,11 +110,12 @@
                             <td>Loyola Campus</td>
                             <td>Aug 02, 2026 @ 7:00 PM</td>
                             <td>0 / 200 Registered</td>
-                            <td><span class="status-badge cancelled">Cancelled</span></td>
+                            <!-- Updated status badge class -->
+                            <td><span class="badge badge-cancelled">Cancelled</span></td>
                             <td>
                                 <div class="action-buttons">
-                                    <button class="btn-action edit">Edit</button>
-                                    <button class="btn-action delete">Delete</button>
+                                    <button class="btn btn-secondary">Edit</button>
+                                    <button class="btn btn-outline">Delete</button>
                                 </div>
                             </td>
                         </tr>
@@ -144,19 +128,12 @@
     <footer class="site-footer">
         <div class="container footer-content">
             <div class="footer-brand">
-                <h2>
-                    Campus<span>Connect</span>
-                </h2>
-
-                <p>
-                    Helping students discover, register for, and manage
-                    campus events in one central location.
-                </p>
+                <h2>Campus<span>Connect</span></h2>
+                <p>Helping students discover, register for, and manage campus events in one central location.</p>
             </div>
 
             <div class="footer-column">
                 <h3>Quick Links</h3>
-
                 <a href="../index.html">Home</a>
                 <a href="events.html">Events</a>
                 <a href="about.html">About</a>
@@ -165,7 +142,6 @@
 
             <div class="footer-column">
                 <h3>Account</h3>
-
                 <a href="login.html">Login</a>
                 <a href="register.html">Create Account</a>
                 <a href="profile.html">Profile</a>
@@ -174,12 +150,22 @@
 
         <div class="footer-bottom">
             <div class="container">
-                <p>
-                    &copy; 2026 CampusConnect. SOEN 287 Project.
-                </p>
+                <p>&copy; 2026 CampusConnect. SOEN 287 Project.</p>
             </div>
         </div>
     </footer>
 
+    <!--
+        PAGE SUMMARY: Manage Events page
+        - This page lists current campus events with status badges and action buttons.
+        - It reuses shared header/footer styling and admin table layout.
+
+        WHAT TO IMPROVE:
+        1. Load table rows dynamically instead of using static sample data.
+        2. Wire the action buttons to real edit/cancel/delete behavior.
+        3. Add search and filter functionality for better event management.
+        4. Ensure the table is fully responsive on mobile screens.
+    -->
+    <script src="../public/js/main.js"></script>
 </body>
 </html>
