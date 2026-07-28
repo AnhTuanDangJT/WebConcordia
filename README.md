@@ -137,7 +137,7 @@ Then open `http://localhost:8000` in your browser.
 |--------|----------------|
 | Member 1 — Anh Tuan Dang | Common layout, public pages, `global.css`, navigation, footer |
 | Member 2 — Mehran Bordbar | Login, registration, profile, `auth.css`, `auth.js` |
-| Member 3 — Najum | Student dashboard, events list, event details, `student.css` |
+| Member 3 — Najum Avur Mammu | Student dashboard, events list, event details, `student.css` |
 | Member 4 — Disha | My registrations, upcoming events, `registrations.css`, `registrations.js` |
 | Member 5 — Tiago | Admin pages, integration, testing, `admin.css` |
 
