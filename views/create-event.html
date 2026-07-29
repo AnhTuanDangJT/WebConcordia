@@ -1,15 +1,27 @@
+<!-- ========================================
+    CREATE EVENT PAGE
+    A page for admins to create new campus events. Contains a form with 
+    fields for title, category, date/time, location, capacity, 
+    organizer, status, and description.
+======================================== -->
+
 <!DOCTYPE html>
+<!-- This file is the admin event creation page. It loads shared site styles and provides a form for admins to submit new event data. -->
 <html lang="en">
-<head>
+<head> <!-- Loads metadata and shared CSS files needed for layout, typography, and admin page styling. -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Event - Admin</title>
-    <link rel="stylesheet" href="../public/css/global.css">
-    <link rel="stylesheet" href="../public/css/admin.css">
+    <link rel="icon" href="../public/images/favicon3.png" type="image/png" sizes="32x32">
+    <link rel="shortcut icon" href="../public/images/favicon3.png" type="image/png">
+    <link rel="stylesheet" href="../public/css/global.css"> <!-- Core shared site styles for buttons, typography, and layout. -->
+    <link rel="stylesheet" href="../public/css/public-pages.css"> <!-- Homepage and hero section styles reused for admin page visuals. -->
+    <link rel="stylesheet" href="../public/css/admin.css"> <!-- Admin-only styles for cards, spacing, and mobile behavior. -->
 </head>
 <body>
 
-    <header class="site-header">
+    <!-- Shared header/navigation bar used across pages -->
+    <header class="site-header"> <!-- Shared site header with logo, navigation links, and mobile nav toggle button "☰". -->
         <div class="container navbar">
             <a href="../index.html" class="site-logo">
                 Campus<span>Connect</span>
@@ -18,18 +30,19 @@
             <button
                 class="nav-toggle"
                 type="button"
-                aria-label="Open navigation menu"
+                aria-label="Open navigation menu" 
                 aria-expanded="false"
                 aria-controls="primary-navigation"
             >
                 ☰
             </button>
 
-            <nav
+            <nav 
                 id="primary-navigation"
                 class="primary-navigation"
                 aria-label="Main navigation"
             >
+                <!-- Primary site navigation for admins. Each <a> anchor sends the browser to a different page. -->
                 <ul class="nav-links">
                     <li>
                         <a href="../index.html">Home</a>
@@ -67,6 +80,7 @@
         </div>
     </header>
 
+    <!-- Main admin content area: event form inside a centered admin container -->
     <main class="admin-container">
         <div class="form-header">
             <h1>Create New Campus Event</h1>
@@ -74,11 +88,23 @@
         </div>
 
         <section class="form-card">
+            <!-- The form currently posts to “#”, which means it will not send data to a server until JavaScript or a backend URL is added. -->
             <form action="#" method="POST" class="event-form">
                 
                 <div class="form-group">
-                    <label for="event-name">Event Name</label>
+                    <label for="event-name">Event Title</label>
                     <input type="text" id="event-name" name="event-name" placeholder="e.g. Annual Hackathon" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="category">Category</label>
+                    <select id="category" name="category" required>
+                        <option value="">Select a category</option>
+                        <option value="academic">Academic / Workshop</option>
+                        <option value="technology">Technology</option>
+                        <option value="social">Social & Cultural</option>
+                        <option value="sports">Sports & Wellness</option>
+                    </select>
                 </div>
 
                 <div class="form-row">
@@ -87,8 +113,12 @@
                         <input type="date" id="event-date" name="event-date" required>
                     </div>
                     <div class="form-group">
-                        <label for="event-time">Time</label>
-                        <input type="time" id="event-time" name="event-time" required>
+                        <label for="start-time">Start Time</label>
+                        <input type="time" id="start-time" name="start-time" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="end-time">End Time</label>
+                        <input type="time" id="end-time" name="end-time" required>
                     </div>
                 </div>
 
@@ -101,9 +131,23 @@
                     </select>
                 </div>
 
-                <div class="form-group">
-                    <label for="capacity">Maximum Capacity</label>
-                    <input type="number" id="capacity" name="capacity" min="1" placeholder="e.g. 50" required>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="capacity">Maximum Capacity</label>
+                        <input type="number" id="capacity" name="capacity" min="1" placeholder="e.g. 50" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="organizer">Organizer</label>
+                        <input type="text" id="organizer" name="organizer" placeholder="e.g. Computer Science Club" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="status">Event Status</label>
+                        <select id="status" name="status">
+                            <option value="active">Active / Open</option>
+                            <option value="full">Full</option>
+                            <option value="cancelled">Cancelled</option>
+                        </select>
+                    </div>
                 </div>
 
                 <div class="form-group">
@@ -112,6 +156,7 @@
                 </div>
 
                 <div class="form-actions">
+                    <!-- The submit button sends the form. The reset button clears all fields in this form. -->
                     <button type="submit" class="btn-primary">Publish Event</button>
                     <button type="reset" class="btn-secondary">Clear Form</button>
                 </div>
@@ -120,6 +165,7 @@
         </section>
     </main>
 
+    <!-- Footer content is shared across the site, providing useful links and brand information. -->
     <footer class="site-footer">
         <div class="container footer-content">
             <div class="footer-brand">
@@ -160,5 +206,20 @@
         </div>
     </footer>
 
+    <!--
+        PAGE SUMMARY: Create Event page
+        - This page is the admin event creation form.
+        - It collects event title, category, date/time, location, capacity, organizer, status, and description.
+        - The form is styled by shared page styles and admin-specific layout rules.
+
+        WHAT TO IMPROVE:
+        1. The form currently uses action="#". It should post to a real backend endpoint or use JavaScript to send the data.
+        2. Add user feedback after submit: success message, error message, and loading state.
+        3. Validate the event timing: ensure end time is after start time before submission.
+        4. Consider preventing invalid combinations, such as capacity <= 0 or missing required fields.
+        5. Add more accessible ARIA hints if the page becomes dynamic.
+    -->
+
+    <script src="../public/js/main.js"></script>
 </body>
 </html>
