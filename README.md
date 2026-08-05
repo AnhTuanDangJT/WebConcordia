@@ -2,7 +2,7 @@
 
 A web-based campus event planning application for **SOEN 287: Web Programming (Summer 2026)**. CampusConnect helps students discover campus events, register for activities, and manage their event schedule, while giving organizers tools to create and manage events.
 
-This repository contains **Deliverable 1 (Frontend)** — HTML, CSS, and frontend JavaScript with hard-coded data and simulated interactions.
+This repository contains **Deliverable 2 (Full Stack)** — Node.js, Express, SQLite, authentication, and database-driven features built on the Deliverable 1 frontend.
 
 ![CampusConnect home page](public/images/homepage-screenshot.png)
 
@@ -108,28 +108,43 @@ WebConcordia/
 
 ## How to Run
 
-No backend or database is required for Deliverable 1.
-
-1. Clone or download this repository.
-2. Open `index.html` in a web browser.
-
-Alternatively, use a local development server (recommended for consistent path behaviour):
+### Deliverable 2 (recommended)
 
 ```bash
-# Using Python
-python -m http.server 8000
-
-# Using Node.js (npx)
-npx serve .
+npm install
+npm run db:init
+npm run db:seed
+npm start
 ```
 
-Then open `http://localhost:8000` in your browser.
+Open `http://localhost:3000` in your browser.
+
+See [INSTALLATION-GUIDE.md](INSTALLATION-GUIDE.md) for full setup instructions and [USER-GUIDE.md](USER-GUIDE.md) for usage instructions.
+
+### Default Test Accounts
+
+| Role | Email | Password |
+|------|-------|----------|
+| Student | `student@test.com` | `password123` |
+| Admin | `admin@test.com` | `password123` |
+
+### Member 1 API Routes
+
+| Method | Route | Description |
+|--------|-------|-------------|
+| GET | `/` | Home page |
+| GET | `/about` | About page |
+| GET | `/contact` | Contact page |
+| GET | `/api/health` | Server health check |
+| POST | `/api/contact` | Submit contact form |
+| GET | `/api/public/featured-events` | Featured events for home page |
 
 ## Technologies
 
-- HTML5
-- CSS3
-- JavaScript (vanilla)
+- HTML5, CSS3, JavaScript (vanilla)
+- Node.js, Express
+- SQLite
+- bcrypt, express-session, express-validator
 
 ## Team Work Distribution
 
@@ -143,9 +158,9 @@ Then open `http://localhost:8000` in your browser.
 
 ## Notes
 
-- Event data is currently hard-coded for frontend demonstration.
-- Login, registration, and event actions are simulated on the client side only.
-- Deliverable 2 will replace simulated behaviour with backend functionality.
+- Public pages (home, about, contact) are served through Express with database-driven featured events.
+- Authentication, events, registrations, and admin features are implemented by team members in Deliverable 2.
+- See `INSTALLATION-GUIDE.md` and `USER-GUIDE.md` for setup and usage details.
 
 ## Course
 

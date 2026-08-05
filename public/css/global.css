@@ -414,6 +414,7 @@ textarea.form-control {
 .primary-navigation {
     display: flex;
     align-items: center;
+    gap: 1.4rem;
 }
 
 .nav-links {
