@@ -8,6 +8,10 @@ router.get("/", publicController.getHomePage);
 router.get("/about", publicController.getAboutPage);
 router.get("/contact", publicController.getContactPage);
 
+// pages must be served manually: these pages may be accessible even by those without a valid session
+router.get("/login", publicController.getLoginPage);
+router.get("/register", publicController.getRegistrationPage);
+
 router.post(
   "/api/contact",
   publicController.contactValidationRules,

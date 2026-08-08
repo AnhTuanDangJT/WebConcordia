@@ -4,16 +4,17 @@
   "description": "A web-based campus event planning application for **SOEN 287: Web Programming (Summer 2026)**. CampusConnect helps students discover campus events, register for activities, and manage their event schedule, while giving organizers tools to create and manage events.",
   "main": "index.js",
   "scripts": {
-  "start": "node app.js",
-  "dev": "nodemon app.js",
-  "db:init": "node database/initializeDatabase.js",
-  "db:seed": "node database/seed.js"
-},
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "db:init": "node database/initializeDatabase.js",
+    "db:seed": "node database/seed.js"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^6.0.0",
+    "bcryptjs": "^3.0.3",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "express-session": "^1.19.0",

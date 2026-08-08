@@ -1,33 +1,7 @@
 require("dotenv").config();
 
 const bcrypt = require("bcrypt");
-const db = require("./database");
-
-function run(sql, params = []) {
-  return new Promise((resolve, reject) => {
-    db.run(sql, params, function onRun(err) {
-      if (err) {
-        reject(err);
-        return;
-      }
-
-      resolve(this);
-    });
-  });
-}
-
-function get(sql, params = []) {
-  return new Promise((resolve, reject) => {
-    db.get(sql, params, (err, row) => {
-      if (err) {
-        reject(err);
-        return;
-      }
-
-      resolve(row);
-    });
-  });
-}
+const { db, run, get } = require("./database");
 
 async function seedDatabase() {
   const passwordHash = await bcrypt.hash("password123", 10);

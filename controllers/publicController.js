@@ -1,4 +1,4 @@
-const db = require("../database/database");
+const { db } = require("../database/database");
 const path = require("path");
 const { body } = require("express-validator");
 
@@ -14,6 +14,16 @@ function getAboutPage(req, res) {
 
 function getContactPage(req, res) {
   res.sendFile(path.join(__dirname, "..", "views", "contact.html"));
+}
+
+
+// controllers for public auth pages
+function getLoginPage(req, res) {
+  res.sendFile(path.join(__dirname, "..", "views", "login.html"));
+}
+
+function getRegistrationPage(req, res) {
+  res.sendFile(path.join(__dirname, "..", "views", "register.html"));
 }
 
 // --- API routes ---
@@ -92,7 +102,6 @@ function getFeaturedEvents(req, res, next) {
       ORDER BY e.event_date ASC, e.start_time ASC
       LIMIT 3
     `;
-  
     db.all(sql, [], (err, rows) => {
       if (err) {
         return next(err);
@@ -113,4 +122,6 @@ function getFeaturedEvents(req, res, next) {
     contactValidationRules,
     submitContactForm,
     getFeaturedEvents,
+    getLoginPage,
+    getRegistrationPage
   };

@@ -272,20 +272,21 @@ async function updateNavigationForAuth() {
     if (!authNav) {
         return;
     }
-
-    try {
-        const response = await fetch("/api/auth/me");
-        const result = await response.json();
-
-        if (!response.ok || !result.success || !result.data) {
-            authNav.innerHTML = `
-                <li><a href="/views/login.html">Login</a></li>
+        const defaultButtons = `
+                <li><a href="/login">Login</a></li>
                 <li>
-                    <a href="/views/register.html" class="btn btn-primary">
+                    <a href="/register" class="btn btn-primary">
                         Get Started
                     </a>
                 </li>
             `;
+    try {
+
+        const response = await fetch("/api/auth/me");
+        const result = await response.json();
+
+        if (!response.ok || !result.success || !result.data) {
+            authNav.innerHTML = defaultButtons;
             return;
         }
 
@@ -294,13 +295,13 @@ async function updateNavigationForAuth() {
         if (user.role === "admin") {
             authNav.innerHTML = `
                 <li><a href="/views/admin-dashboard.html">Admin Dashboard</a></li>
-                <li><a href="/views/profile.html">Profile</a></li>
+                <li><a href="/api/auth/profile">Profile</a></li>
                 <li><button type="button" class="btn btn-secondary" id="logout-button">Logout</button></li>
             `;
         } else {
             authNav.innerHTML = `
                 <li><a href="/views/student-dashboard.html">Dashboard</a></li>
-                <li><a href="/views/profile.html">Profile</a></li>
+                <li><a href="/api/auth/profile">Profile</a></li>
                 <li><button type="button" class="btn btn-secondary" id="logout-button">Logout</button></li>
             `;
         }
@@ -313,17 +314,10 @@ async function updateNavigationForAuth() {
                     method: "POST",
                 });
 
-                window.location.href = "/views/login.html";
+                window.location.href = "/login";
             });
         }
     } catch (error) {
-        authNav.innerHTML = `
-            <li><a href="/views/login.html">Login</a></li>
-            <li>
-                <a href="/views/register.html" class="btn btn-primary">
-                    Get Started
-                </a>
-            </li>
-        `;
+        authNav.innerHTML = defaultButtons;
     }
 }

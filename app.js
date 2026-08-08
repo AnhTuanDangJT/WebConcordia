@@ -8,7 +8,7 @@ const publicRoutes = require("./routes/publicRoutes");
 const errorMiddleware = require("./middleware/errorMiddleware");
 
 // Teammates will add these later:
-// const authRoutes = require("./routes/authRoutes");
+const { authRouter } = require("./routes/authRoutes");
 // const eventRoutes = require("./routes/eventRoutes");
 // const registrationRoutes = require("./routes/registrationRoutes");
 // const adminRoutes = require("./routes/adminRoutes");
@@ -19,6 +19,10 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+const memoryStore = new session.MemoryStore({
+  checkPeriod: 1000 * 60 * 60 * 24
+});
+
 app.use(
   session({
     secret: process.env.SESSION_SECRET || "dev-secret",
@@ -28,15 +32,16 @@ app.use(
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24,
     },
+    store: memoryStore,
   })
 );
 
 app.use(express.static(path.join(__dirname, "public")));
-app.use("/views", express.static(path.join(__dirname, "views")));
+//app.use("/views", express.static(path.join(__dirname, "views")));
 
 app.use("/", publicRoutes);
 
-// app.use("/api/auth", authRoutes);
+app.use("/api/auth", authRouter);
 // app.use("/api/events", eventRoutes);
 // app.use("/api/registrations", registrationRoutes);
 // app.use("/api/admin", adminRoutes);
@@ -48,6 +53,7 @@ app.use((req, res) => {
       message: "API route not found",
     });
   }
+
 
   return res.status(404).send("Page not found");
 });
