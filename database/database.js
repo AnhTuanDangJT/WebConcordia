@@ -12,4 +12,32 @@ const db = new sqlite3.Database(dbPath, (err) => {
 
 db.run("PRAGMA foreign_keys = ON"); // Enables foreign-key rules, such as requiring organizer_id to match a real user.
 
-module.exports = db;
+
+// General methods for doing database queries
+function run(sql, params = []) {
+  return new Promise((resolve, reject) => {
+    db.run(sql, params, function onRun(err) {
+      if (err) {
+        reject(err);
+        return;
+      }
+
+      resolve(this);
+    });
+  });
+}
+
+function get(sql, params = []) {
+  return new Promise((resolve, reject) => {
+    db.get(sql, params, (err, row) => {
+      if (err) {
+        reject(err);
+        return;
+      }
+
+      resolve(row);
+    });
+  });
+}
+
+module.exports = { db, run, get };
