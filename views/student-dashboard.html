@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Dashboard | CampusConnect</title>
 
-        <link rel="stylesheet" href="/css/global.css">
+    <link rel="stylesheet" href="/css/global.css">
     <link rel="stylesheet" href="/css/public-pages.css">
 
     <link rel="stylesheet" type="text/css" href="/css/student.css">
@@ -17,6 +17,7 @@
         }
     </style>
     <script src="/js/main.js" defer></script>
+    <script src="/js/events.js" defer></script>
 </head>
 <body>
     <!-- Shared header -->
@@ -59,7 +60,7 @@
                     </li>
 
                     <li>
-                        <a href="/views/login.html"  class="active">Login</a>
+                        <a href="/views/login.html"  class="active">Dashboard</a>
                     </li>
                 </ul>
             </nav>
@@ -67,10 +68,10 @@
     </header>
 
     <!-- Summary Section -->
-    <section class="page-header" style = "background-color:rgb(255, 254, 229);">
+    <section class="page-header">
         <!-- Student's name -->
         <div class="container">
-            <h2>Welcome Student Name</h2>
+            <h1 id = 'studentName'>Hi</h1>
             <p>Discover events and manage your campus activities.</p>
         </div>
         
@@ -103,15 +104,39 @@
     </section>
 
     <!-- Registered events gallery with horizontal scrollbar -->
-    <section class="page-section featured-events">
+    <section id="registeredEventsSection" class="page-section featured-events registered-events-section card-view">
             <div class="container">
                 <div class="section-heading">
-                    <h2 style="text-align: left;">Registered Events</h2>
+                    <!-- Option to toggle between card view and list view for registered events -->
+                    <div class="view-toggle-toolbar" role="group" aria-label="Registered events view toggle">
+                        <span class="view-toggle-label">View:</span>
+                        <!-- Buttons to toggle between card view and list view for registered events -->
+                        <button type="button" class="view-toggle-btn view-card active" aria-pressed="true" data-view="card">
+                            <span class="view-toggle-icon">▣</span>
+                            Card
+                        </button>
+                        <!--list view button-->
+                        <button type="button" class="view-toggle-btn view-list" aria-pressed="false" data-view="list">
+                            <span class="view-toggle-icon">☰</span>
+                            List
+                        </button>
+                    </div>
+
+                    <div style="clear: both; width: 100%;"></div>
+
+                    <div class="events-tab-toolbar" aria-label="Event type selector" style="margin-top:0.5rem;">
+                        <label for="eventsTypeSelect" class="visually-hidden">Event type:</label>
+                        <select id="eventsTypeSelect" class="events-select" aria-label="Event type">
+                            <option value="registered" selected>Registered Events</option>
+                            <option value="attended">Attended Events</option>
+                            <option value="cancelled">Cancelled Events</option>
+                        </select>
+                    </div>
                 </div>
 
                 <!-- Scroll -->
                 <div class="scroll-container">
-                    <div class="grid grid-3">
+                    <div id="registeredEventsGrid" class="grid grid-3">
                         <!-- Card 1 -->
                         <article class="card event-card">
                             <div class="event-card-top">
@@ -263,6 +288,71 @@
                             </div>
                         </article>
                     </div>
+
+                    <!-- Table for list view -->
+                    <div id="registeredEventsList" class="registered-events-list">
+                        <table class="registered-events-table">
+                            <thead>
+                                <tr>
+                                    <th>Category</th>
+                                    <th>Date</th>
+                                    <th>Title</th>
+                                    <th>Time / Location</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Academic Workshop</td>
+                                    <td>August 5, 2026</td>
+                                    <td>Web Development Workshop</td>
+                                    <td>1:00 PM – 3:00 PM<br>Hall Building</td>
+                                    <td><span class="badge badge-open">Open</span></td>
+                                    <td>
+                                        <a href="/views/event-details.html" class="event-link">View</a>
+                                        <button type="button" class="cancel-icon-btn">Cancel</button>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>Career Event</td>
+                                    <td>August 12, 2026</td>
+                                    <td>Campus Career Fair</td>
+                                    <td>10:00 AM – 4:00 PM<br>EV Building</td>
+                                    <td><span class="badge badge-full">Full</span></td>
+                                    <td>
+                                        <a href="/views/event-details.html" class="event-link">View</a>
+                                        <button type="button" class="cancel-icon-btn">Cancel</button>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>Networking Event</td>
+                                    <td>August 18, 2026</td>
+                                    <td>Student Networking Evening</td>
+                                    <td>5:30 PM – 8:00 PM<br>John Molson Building</td>
+                                    <td><span class="badge badge-open">Open</span></td>
+                                    <td>
+                                        <a href="/views/event-details.html" class="event-link">View</a>
+                                        <button type="button" class="cancel-icon-btn">Cancel</button>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>Sports Event</td>
+                                    <td>September 18, 2026</td>
+                                    <td>Student Sports Tournament</td>
+                                    <td>10:30 AM – 12:00 PM<br>Loyola</td>
+                                    <td><span class="badge badge-open">Open</span></td>
+                                    <td>
+                                        <a href="/views/event-details.html" class="event-link">View</a>
+                                        <button type="button" class="cancel-icon-btn">Cancel</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
 
                 <!-- View all events button -->
@@ -277,8 +367,23 @@
             </div>
     </section>
 
+    <!-- Cancelled events (initially hidden placeholder) -->
+    <section id="cancelledEventsSection" class="page-section featured-events" style="display:none;">
+        <div class="container">
+            <div class="section-heading">
+                <h2 style="text-align: left;">Cancelled Events</h2>
+            </div>
+
+            <div class="scroll-container">
+                <div class="container">
+                    <p>No cancelled events to show.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Attended events gallery with horizontal scrollbar -->
-    <section class="page-section featured-events">
+    <section id="attendedEventsSection" class="page-section featured-events" style="display:none;">
         <div class="container">
             <div class="section-heading">
                 <h2 style="text-align: left;">Attended Events</h2>
