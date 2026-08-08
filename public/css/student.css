@@ -24,6 +24,10 @@ h1,h2,h3,h4 {
 
 .page-header {
     padding-top: 20px;
+    background-image: url("../images/student-dashboard-bg.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
 .container {
@@ -39,6 +43,174 @@ h1,h2,h3,h4 {
     border-radius: 1rem;
     box-shadow: var(--shadow-card);
 }
+
+.view-toggle-toolbar {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+.view-toggle-label {
+    font-weight: 700;
+    color: var(--color-text-secondary);
+}
+
+.view-toggle-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid transparent;
+    border-radius: 999px;
+    background: var(--color-surface);
+    color: var(--color-text);
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.view-toggle-btn:hover,
+.view-toggle-btn:focus {
+    border-color: var(--color-border);
+}
+
+.view-toggle-btn.active,
+.view-toggle-btn[aria-pressed="true"] {
+    background: rgba(122, 23, 48, 0.12);
+    color: var(--color-primary);
+    border-color: rgba(122, 23, 48, 0.28);
+}
+
+.view-toggle-icon {
+    font-size: 0.95rem;
+    line-height: 1;
+}
+
+/* Events tab toolbar (Registered / Attended / Cancelled) */
+.events-tab-toolbar {
+    display: inline-flex;
+    gap: 0.5rem;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.events-tab-btn {
+    padding: 0.45rem 0.9rem;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    background: var(--color-surface);
+    color: var(--color-text);
+    cursor: pointer;
+}
+
+.events-tab-btn.active,
+.events-tab-btn[aria-pressed="true"] {
+    background: rgba(122,23,48,0.08);
+    color: var(--color-primary);
+    border-color: rgba(122,23,48,0.16);
+}
+
+/* Hidden helper class */
+.section-hidden { display: none !important; }
+
+/* Select styling for event type */
+.events-select {
+    padding: 0.45rem 0.6rem;
+    border-radius: 8px;
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    color: var(--color-text);
+}
+
+.registered-events-section.list-view .scroll-container {
+    overflow-x: visible !important;
+}
+
+.registered-events-section.list-view .scroll-container .grid-3 {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+}
+
+.registered-events-section.list-view .scroll-container .event-card {
+    flex: 1 1 auto !important;
+    min-width: auto !important;
+    max-width: none !important;
+}
+
+/* Simple table styles for list view */
+.registered-events-list {
+    overflow-x: auto;
+}
+
+.registered-events-table {
+    width: 100%;
+    min-width: 720px; /* keeps columns readable and enables horizontal scroll on small screens */
+    border-collapse: collapse;
+    background: transparent;
+    font-size: 0.95rem;
+}
+
+.registered-events-table th,
+.registered-events-table td {
+    padding: 0.5rem 0.75rem;
+    border-bottom: 1px solid #e9e9e9;
+    text-align: left;
+    vertical-align: middle;
+}
+
+.registered-events-table thead th {
+    font-weight: 600;
+    color: #444;
+    background: #fafafa;
+    border-bottom: 2px solid #e6e6e6;
+}
+
+.registered-events-table tbody tr:hover {
+    background: #fbfbfb;
+}
+
+.registered-events-table td .event-link {
+    margin-right: 0.5rem;
+    color: var(--color-primary);
+}
+
+.registered-events-table .actions-cell {
+    text-align: right;
+    white-space: nowrap;
+}
+
+.badge {
+    display: inline-block;
+    padding: 0.18rem 0.45rem;
+    font-size: 0.78rem;
+    border-radius: 4px;
+}
+
+.badge-open {
+    background: #eaf6ec;
+    color: #106a2b;
+}
+
+.badge-full {
+    background: #fff6ea;
+    color: #7a4a00;
+}
+
+/* Toggle visibility between card grid and table list */
+/* Default: card view shows grid, hides list */
+.registered-events-section.card-view .registered-events-list { display: none !important; }
+.registered-events-section.card-view #registeredEventsGrid { display: flex !important; }
+
+/* List view: hide the grid and show the table. Use ID selectors for higher specificity to override earlier rules. */
+.registered-events-section.list-view #registeredEventsGrid { display: none !important; }
+.registered-events-section.list-view #registeredEventsList { display: block !important; }
+
+/* Fallback: also hide any generic .grid in list view */
+.registered-events-section.list-view .grid { display: none !important; }
+
 /* Flexbox layout for event actions */
 .event-actions {
   display: flex;
