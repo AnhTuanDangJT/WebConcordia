@@ -114,6 +114,38 @@ function getFeaturedEvents(req, res, next) {
     });
   }
 
+  function getAllEvents(req, res, next) {
+    const sql = `
+      SELECT
+        e.event_id,
+        e.title,
+        e.description,
+        e.category,
+        e.event_date,
+        e.start_time,
+        e.end_time,
+        e.location,
+        e.capacity,
+        e.status,
+        u.full_name AS organizer_name
+      FROM events e
+      JOIN users u ON e.organizer_id = u.user_id
+      WHERE e.event_date >= date('now')
+      ORDER BY e.event_date ASC, e.start_time ASC
+    `;
+
+    db.all(sql, [], (err, rows) => {
+      if (err) {
+        return next(err);
+      }
+
+      res.status(200).json({
+        success: true,
+        data: rows,
+      });
+    });
+  }
+
   module.exports = {
     getHomePage,
     getAboutPage,
@@ -122,6 +154,7 @@ function getFeaturedEvents(req, res, next) {
     contactValidationRules,
     submitContactForm,
     getFeaturedEvents,
+    getAllEvents,
     getLoginPage,
     getRegistrationPage
   };
