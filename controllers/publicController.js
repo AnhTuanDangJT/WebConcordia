@@ -1,6 +1,8 @@
 const { db } = require("../database/database");
 const path = require("path");
 const { body } = require("express-validator");
+const { testUser } = require("../middleware/authMiddleware");
+
 
 // --- Page routes ---
 
@@ -17,9 +19,23 @@ function getContactPage(req, res) {
 }
 
 
-// controllers for public auth pages
-function getLoginPage(req, res) {
-  res.sendFile(path.join(__dirname, "..", "views", "login.html"));
+// controller for public auth page
+
+async function getLoginPage(req, res)
+{
+  try
+  {
+    await testUser(req);
+    switch(req.user.role)
+    {
+      case "student": res.redirect("/student/dashboard"); break;
+      case "admin": res.redirect("/admin/dashboard"); break;
+    }
+  }
+  catch(error)
+  {
+    res.sendFile(path.join(__dirname, "..", "views", "login.html"));
+  }
 }
 
 function getRegistrationPage(req, res) {
