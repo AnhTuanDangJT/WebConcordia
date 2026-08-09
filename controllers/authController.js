@@ -86,9 +86,12 @@ async function registerUser(req, res) {
     }
     catch(error)
     {
-        redirect = "/views/login.html";
+        redirect = "/login";
     }
-    res.redirect(redirect);
+    res.status(200).json({
+        success: true,
+        redirect,
+    });
 }
 
 async function logout(req, res) {
@@ -149,7 +152,10 @@ async function login(req, res) {
                     redirect = "/api/admin/dashboard";
                     break;
             }
-            res.redirect(redirect);
+            res.status(200).json({
+                success: true,
+                redirect,
+            });
 
         }
         else

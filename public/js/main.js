@@ -1,5 +1,9 @@
+let eventPageEvents = [];
+
 document.addEventListener("DOMContentLoaded", () => {
     setupMobileNavigation();
+    setupEventsViewToggle();
+    setupEventPage();
     setupContactForm();
     loadFeaturedEvents();
     updateNavigationForAuth();
@@ -41,6 +45,185 @@ function setupMobileNavigation() {
             closeMenu();
         }
     });
+}
+
+function setupEventsViewToggle() {
+    const sections = document.querySelectorAll('.registered-events-section');
+    if (!sections.length) {
+        return;
+    }
+
+    sections.forEach((section) => {
+        const buttons = section.querySelectorAll('.view-toggle-toolbar .view-toggle-btn');
+        if (!buttons.length) {
+            return;
+        }
+
+        buttons.forEach((button) => {
+            button.addEventListener('click', () => {
+                const selectedView = button.dataset.view;
+                if (!selectedView) {
+                    return;
+                }
+
+                buttons.forEach((btn) => {
+                    const isActive = btn === button;
+                    btn.classList.toggle('active', isActive);
+                    btn.setAttribute('aria-pressed', String(isActive));
+                });
+
+                section.classList.toggle('list-view', selectedView === 'list');
+                section.classList.toggle('card-view', selectedView === 'card');
+            });
+        });
+    });
+}
+
+function setupEventPage() {
+    const eventSection = document.getElementById('registeredEventsSection');
+    if (!eventSection) {
+        return;
+    }
+
+    setupEventFilters();
+    loadEventPageEvents();
+}
+
+function setupEventFilters() {
+    const searchInput = document.querySelector('#event-search');
+    const categoryFilter = document.querySelector('#category-filter');
+    const dateFilter = document.querySelector('#date-filter');
+    const locationFilter = document.querySelector('#location-filter');
+    const organizerFilter = document.querySelector('#organizer-filter');
+    const statusFilter = document.querySelector('#status-filter');
+    const clearFiltersButton = document.querySelector('#clear-filters');
+
+    if (!searchInput || !categoryFilter || !dateFilter || !locationFilter || !organizerFilter || !statusFilter || !clearFiltersButton) {
+        return;
+    }
+
+    const applyFilters = () => {
+        const filtered = filterEventPageEvents();
+        renderEventPageEvents(filtered);
+    };
+
+    [searchInput, categoryFilter, dateFilter, locationFilter, organizerFilter, statusFilter].forEach((input) => {
+        input.addEventListener('input', applyFilters);
+    });
+
+    clearFiltersButton.addEventListener('click', () => {
+        searchInput.value = '';
+        categoryFilter.value = '';
+        dateFilter.value = '';
+        locationFilter.value = '';
+        organizerFilter.value = '';
+        statusFilter.value = 'All';
+        applyFilters();
+    });
+}
+
+function filterEventPageEvents() {
+    const searchValue = document.querySelector('#event-search')?.value.trim().toLowerCase() || '';
+    const categoryValue = document.querySelector('#category-filter')?.value || '';
+    const dateValue = document.querySelector('#date-filter')?.value || '';
+    const locationValue = document.querySelector('#location-filter')?.value || '';
+    const organizerValue = document.querySelector('#organizer-filter')?.value || '';
+    const statusValue = document.querySelector('#status-filter')?.value || 'All';
+
+    return eventPageEvents.filter((event) => {
+        if (searchValue) {
+            const title = String(event.title || '').toLowerCase();
+            const description = String(event.description || '').toLowerCase();
+            if (!title.includes(searchValue) && !description.includes(searchValue)) {
+                return false;
+            }
+        }
+
+        if (categoryValue && event.category !== categoryValue) {
+            return false;
+        }
+
+        if (dateValue && event.event_date !== dateValue) {
+            return false;
+        }
+
+        if (locationValue && event.location !== locationValue) {
+            return false;
+        }
+
+        if (organizerValue && event.organizer_name !== organizerValue) {
+            return false;
+        }
+
+        if (statusValue !== 'All' && event.status !== statusValue) {
+            return false;
+        }
+
+        return true;
+    });
+}
+
+async function loadEventPageEvents() {
+    const grid = document.getElementById('registeredEventsGrid');
+    const listBody = document.querySelector('#registeredEventsList tbody');
+
+    if (!grid || !listBody) {
+        return;
+    }
+
+    try {
+        const response = await fetch('/api/public/events');
+        const result = await response.json();
+
+        if (!response.ok || !result.success) {
+            throw new Error(result.message || 'Failed to load events');
+        }
+
+        eventPageEvents = result.data || [];
+        renderEventPageEvents(eventPageEvents);
+    } catch (error) {
+        console.error('Error loading event page data:', error);
+        grid.innerHTML = '<p class="card-text">Unable to load events.</p>';
+        listBody.innerHTML = '<tr><td colspan="6">Unable to load events.</td></tr>';
+    }
+}
+
+function renderEventPageEvents(events) {
+    const grid = document.getElementById('registeredEventsGrid');
+    const listBody = document.querySelector('#registeredEventsList tbody');
+
+    if (!grid || !listBody) {
+        return;
+    }
+
+    if (!events.length) {
+        grid.innerHTML = '<p class="card-text">No events found.</p>';
+        listBody.innerHTML = '<tr><td colspan="6">No events found.</td></tr>';
+        return;
+    }
+
+    grid.innerHTML = '';
+    listBody.innerHTML = '';
+
+    events.forEach((event) => {
+        grid.insertAdjacentHTML('beforeend', createEventCardHtml(event));
+        listBody.insertAdjacentHTML('beforeend', createEventListRow(event));
+    });
+}
+
+function createEventListRow(event) {
+    const statusClass = getStatusBadgeClass(event.status);
+
+    return `
+        <tr>
+            <td>${escapeHtml(event.category)}</td>
+            <td>${escapeHtml(formatDate(event.event_date))}</td>
+            <td>${escapeHtml(event.title)}</td>
+            <td>${escapeHtml(event.start_time)} – ${escapeHtml(event.end_time)}<br>${escapeHtml(event.location)}</td>
+            <td><span class="badge ${statusClass}">${escapeHtml(event.status)}</span></td>
+            <td><a href="/views/event-details.html?id=${encodeURIComponent(event.event_id)}" class="event-link">View</a></td>
+        </tr>
+    `;
 }
 
 function setupContactForm() {

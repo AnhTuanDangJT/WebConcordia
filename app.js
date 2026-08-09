@@ -38,7 +38,7 @@ app.use(
 );
 
 app.use(express.static(path.join(__dirname, "public")));
-//app.use("/views", express.static(path.join(__dirname, "views")));
+app.use("/views", express.static(path.join(__dirname, "views")));
 
 app.use("/", publicRoutes);
 
@@ -46,7 +46,7 @@ app.use("/api/auth", authRouter);
 // app.use("/api/events", eventRoutes);
 // app.use("/api/registrations", registrationRoutes);
 // app.use("/api/admin", adminRoutes);
-app.use("/api/students", studentRoutes);
+app.use("/api/student", studentRoutes);
 
 app.use((req, res) => {
   if (req.path.startsWith("/api/")) {
