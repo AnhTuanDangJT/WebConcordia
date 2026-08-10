@@ -1,9 +1,5 @@
-let eventPageEvents = [];
-
 document.addEventListener("DOMContentLoaded", () => {
     setupMobileNavigation();
-    setupEventsViewToggle();
-    setupEventPage();
     setupContactForm();
     loadFeaturedEvents();
     updateNavigationForAuth();
@@ -47,167 +43,49 @@ function setupMobileNavigation() {
     });
 }
 
-function setupEventsViewToggle() {
-    const sections = document.querySelectorAll('.registered-events-section');
-    if (!sections.length) {
-        return;
-    }
 
-    sections.forEach((section) => {
-        const buttons = section.querySelectorAll('.view-toggle-toolbar .view-toggle-btn');
-        if (!buttons.length) {
-            return;
-        }
+function attachEventDetailsButtons() {
+    document.querySelectorAll('.view-details-btn').forEach((button) => {
+        button.addEventListener('click', async () => {
+            const eventId = button.dataset.eventId;
 
-        buttons.forEach((button) => {
-            button.addEventListener('click', () => {
-                const selectedView = button.dataset.view;
-                if (!selectedView) {
-                    return;
-                }
+            if (!eventId) {
+                return;
+            }
 
-                buttons.forEach((btn) => {
-                    const isActive = btn === button;
-                    btn.classList.toggle('active', isActive);
-                    btn.setAttribute('aria-pressed', String(isActive));
+            try {
+                const response = await fetch('/api/events/select', {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ event_id: eventId })
                 });
 
-                section.classList.toggle('list-view', selectedView === 'list');
-                section.classList.toggle('card-view', selectedView === 'card');
-            });
-        });
-    });
-}
+                const result = await response.json();
 
-function setupEventPage() {
-    const eventSection = document.getElementById('registeredEventsSection');
-    if (!eventSection) {
-        return;
-    }
+                if (!response.ok || !result.success) {
+                    throw new Error(result.message || 'Unable to open event details');
+                }
 
-    setupEventFilters();
-    loadEventPageEvents();
-}
+                const detailsResponse = await fetch(`/api/events/details/${encodeURIComponent(eventId)}`, {
+                    credentials: 'include'
+                });
 
-function setupEventFilters() {
-    const searchInput = document.querySelector('#event-search');
-    const categoryFilter = document.querySelector('#category-filter');
-    const dateFilter = document.querySelector('#date-filter');
-    const locationFilter = document.querySelector('#location-filter');
-    const organizerFilter = document.querySelector('#organizer-filter');
-    const statusFilter = document.querySelector('#status-filter');
-    const clearFiltersButton = document.querySelector('#clear-filters');
+                const detailsResult = await detailsResponse.json();
 
-    if (!searchInput || !categoryFilter || !dateFilter || !locationFilter || !organizerFilter || !statusFilter || !clearFiltersButton) {
-        return;
-    }
+                if (!detailsResponse.ok || !detailsResult.success) {
+                    throw new Error(detailsResult.message || 'Unable to load event details');
+                }
 
-    const applyFilters = () => {
-        const filtered = filterEventPageEvents();
-        renderEventPageEvents(filtered);
-    };
-
-    [searchInput, categoryFilter, dateFilter, locationFilter, organizerFilter, statusFilter].forEach((input) => {
-        input.addEventListener('input', applyFilters);
-    });
-
-    clearFiltersButton.addEventListener('click', () => {
-        searchInput.value = '';
-        categoryFilter.value = '';
-        dateFilter.value = '';
-        locationFilter.value = '';
-        organizerFilter.value = '';
-        statusFilter.value = 'All';
-        applyFilters();
-    });
-}
-
-function filterEventPageEvents() {
-    const searchValue = document.querySelector('#event-search')?.value.trim().toLowerCase() || '';
-    const categoryValue = document.querySelector('#category-filter')?.value || '';
-    const dateValue = document.querySelector('#date-filter')?.value || '';
-    const locationValue = document.querySelector('#location-filter')?.value || '';
-    const organizerValue = document.querySelector('#organizer-filter')?.value || '';
-    const statusValue = document.querySelector('#status-filter')?.value || 'All';
-
-    return eventPageEvents.filter((event) => {
-        if (searchValue) {
-            const title = String(event.title || '').toLowerCase();
-            const description = String(event.description || '').toLowerCase();
-            if (!title.includes(searchValue) && !description.includes(searchValue)) {
-                return false;
+                sessionStorage.setItem('selectedEvent', JSON.stringify(detailsResult.data));
+                window.location.href = '/views/event-details.html';
+            } catch (error) {
+                console.error('Error navigating to event details:', error);
+                window.alert(error.message || 'Unable to open event details.');
             }
-        }
-
-        if (categoryValue && event.category !== categoryValue) {
-            return false;
-        }
-
-        if (dateValue && event.event_date !== dateValue) {
-            return false;
-        }
-
-        if (locationValue && event.location !== locationValue) {
-            return false;
-        }
-
-        if (organizerValue && event.organizer_name !== organizerValue) {
-            return false;
-        }
-
-        if (statusValue !== 'All' && event.status !== statusValue) {
-            return false;
-        }
-
-        return true;
-    });
-}
-
-async function loadEventPageEvents() {
-    const grid = document.getElementById('registeredEventsGrid');
-    const listBody = document.querySelector('#registeredEventsList tbody');
-
-    if (!grid || !listBody) {
-        return;
-    }
-
-    try {
-        const response = await fetch('/api/public/events');
-        const result = await response.json();
-
-        if (!response.ok || !result.success) {
-            throw new Error(result.message || 'Failed to load events');
-        }
-
-        eventPageEvents = result.data || [];
-        renderEventPageEvents(eventPageEvents);
-    } catch (error) {
-        console.error('Error loading event page data:', error);
-        grid.innerHTML = '<p class="card-text">Unable to load events.</p>';
-        listBody.innerHTML = '<tr><td colspan="6">Unable to load events.</td></tr>';
-    }
-}
-
-function renderEventPageEvents(events) {
-    const grid = document.getElementById('registeredEventsGrid');
-    const listBody = document.querySelector('#registeredEventsList tbody');
-
-    if (!grid || !listBody) {
-        return;
-    }
-
-    if (!events.length) {
-        grid.innerHTML = '<p class="card-text">No events found.</p>';
-        listBody.innerHTML = '<tr><td colspan="6">No events found.</td></tr>';
-        return;
-    }
-
-    grid.innerHTML = '';
-    listBody.innerHTML = '';
-
-    events.forEach((event) => {
-        grid.insertAdjacentHTML('beforeend', createEventCardHtml(event));
-        listBody.insertAdjacentHTML('beforeend', createEventListRow(event));
+        });
     });
 }
 
@@ -221,7 +99,7 @@ function createEventListRow(event) {
             <td>${escapeHtml(event.title)}</td>
             <td>${escapeHtml(event.start_time)} – ${escapeHtml(event.end_time)}<br>${escapeHtml(event.location)}</td>
             <td><span class="badge ${statusClass}">${escapeHtml(event.status)}</span></td>
-            <td><a href="/views/event-details.html?id=${encodeURIComponent(event.event_id)}" class="event-link">View</a></td>
+            <td><button type="button" class="event-link view-details-btn" data-event-id="${escapeHtml(event.event_id)}">View</button></td>
         </tr>
     `;
 }
@@ -341,6 +219,9 @@ async function loadFeaturedEvents() {
         if (heroCard && events[0]) {
             heroCard.innerHTML = createHeroEventHtml(events[0]);
         }
+
+        // Attach AFTER all buttons have been created
+        attachEventDetailsButtons();
     } catch (error) {
         console.error("Failed to load featured events:", error);
     }
@@ -367,9 +248,15 @@ function createEventCardHtml(event) {
                 <span>${escapeHtml(event.location)}</span>
             </div>
 
-            <a href="/views/event-details.html?id=${event.event_id}" class="event-link">
-                View details →
-            </a>
+            <div class="event-actions">
+                <button
+                    type="button"
+                    class="event-link view-details-btn"
+                    data-event-id="${escapeHtml(event.event_id)}"
+                >
+                    View details →
+                </button>
+            </div>
         </article>
     `;
 }
@@ -399,9 +286,13 @@ function createHeroEventHtml(event) {
             <li><strong>Organizer:</strong> ${escapeHtml(event.organizer_name || "Campus Organizer")}</li>
         </ul>
 
-        <a href="/views/event-details.html?id=${event.event_id}" class="btn btn-primary">
+        <button
+            type="button"
+            class="btn btn-primary view-details-btn"
+            data-event-id="1"
+        >
             View Event
-        </a>
+        </button>
     `;
 }
 
