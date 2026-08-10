@@ -1,46 +1,85 @@
-/* By Tiago */
-// routes/adminRoutes.js
-const express = require('express');
+const express = require("express");
+const adminController = require("../controllers/adminController");
+
 const router = express.Router();
 
-// 1. Import both middlewares
-const { validSession } = require('../middleware/authMiddleware');
-const { checkRole } = require('../middleware/roleMiddleware');
+// Middleware to check if user is authenticated and has Admin role
+const authMiddleware = (req, res, next) => {
+  if (!req.session.user) {
+    return res.status(401).json({
+      success: false,
+      message: "Unauthorized: Please log in",
+    });
+  }
 
-// 2. Import your controller
-const adminController = require('../controllers/adminController');
+  if (req.session.user.role !== "Admin") {
+    return res.status(403).json({
+      success: false,
+      message: "Forbidden: Admin access required",
+    });
+  }
 
-// 3. Chain the middlewares on the router. 
-// Order matters: validSession (401) MUST run before checkRole (403)
-router.use(validSession, checkRole('admin')); 
-// Note: If your database stores roles with a capital 'A', use checkRole('Admin') instead.
+  // Attach user to request object for use in controllers
+  req.user = req.session.user;
+  next();
+};
 
-// 4. Define your protected routes (Tasks 2 - 9)
-// Task 9: Admin dashboard statistics
-router.get('/dashboard', adminController.getDashboardStats);
+// Apply auth middleware to all admin routes
+router.use(authMiddleware);
 
-// Task 6: Manage-events table
-router.get('/events', adminController.getEvents);
+// ==================== EVENT ENDPOINTS ====================
 
-// Task 2: Create events
-router.post('/events', adminController.createEvent);
+/**
+ * GET /api/admin/dashboard
+ * Get admin dashboard statistics
+ */
+router.get("/dashboard", adminController.getDashboardStats);
 
-// Task 3: Edit events
-router.put('/events/:eventId', adminController.editEvent);
+/**
+ * GET /api/admin/events
+ * Get all events for management
+ */
+router.get("/events", adminController.getEvents);
 
-// Task 3a: Fetch a single event for edit form
-router.get('/events/:eventId', adminController.getEventById);
+/**
+ * POST /api/admin/events
+ * Create a new event
+ */
+router.post("/events", adminController.createEvent);
 
-// Task 4: Cancel/disable events
-router.patch('/events/:eventId/status', adminController.changeEventStatus);
+/**
+ * PUT /api/admin/events/:eventId
+ * Edit an existing event
+ */
+router.put("/events/:eventId", adminController.editEvent);
 
-// Task 5: Delete events
-router.delete('/events/:eventId', adminController.deleteEvent);
+/**
+ * PATCH /api/admin/events/:eventId/status
+ * Change event status (Cancel, Disable, etc.)
+ */
+router.patch("/events/:eventId/status", adminController.updateEventStatus);
 
-// Task 7: View registered students for an event
-router.get('/events/:eventId/registrations', adminController.getEventRegistrations);
+/**
+ * DELETE /api/admin/events/:eventId
+ * Delete an event (only if no registrations exist)
+ */
+router.delete("/events/:eventId", adminController.deleteEvent);
 
-// Task 8: Update attendance for a registration
-router.patch('/registrations/:registrationId/attendance', adminController.updateAttendance);
+// ==================== REGISTRATION ENDPOINTS ====================
+
+/**
+ * GET /api/admin/events/:eventId/registrations
+ * Get all registrations for a specific event
+ */
+router.get("/events/:eventId/registrations", adminController.getRegistrations);
+
+/**
+ * PATCH /api/admin/registrations/:registrationId/attendance
+ * Mark attendance for a registration
+ */
+router.patch(
+  "/registrations/:registrationId/attendance",
+  adminController.markAttendance
+);
 
 module.exports = router;
