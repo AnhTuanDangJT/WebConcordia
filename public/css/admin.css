@@ -2,6 +2,7 @@
    ADMIN DASHBOARD CUSTOM STYLES
    (Page Layout, Metrics Grid, Stats Cards)
    Header and Footer are styled in global.css!
+   By Tiago
 ======================================== */
 
 /* --- ADMIN LAYOUT & SPACING --- */
@@ -98,5 +99,88 @@
 
     .form-card {
         padding: 16px;
+    }
+}
+
+/* ========================================
+   ATTENDANCE MANAGEMENT CUSTOM STYLES
+   (Appended to admin.css without touching existing styles)
+======================================== */
+
+/* --- ATTENDANCE CONTROLS & DROPDOWN --- */
+.attendance-controls {
+    background-color: var(--color-surface, #ffffff);
+    padding: 20px;
+    border-radius: var(--radius-medium, 8px);
+    border: 1px solid var(--color-border, #d9dde3);
+    box-shadow: var(--shadow-small, 0 4px 6px rgba(0, 0, 0, 0.05));
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.attendance-controls label {
+    font-weight: 600;
+    color: var(--color-text, #20242a);
+    font-size: 0.95rem;
+}
+
+.attendance-controls select {
+    flex: 1;
+    max-width: 400px;
+    padding: 10px 12px;
+    border: 1px solid var(--color-border, #d9dde3);
+    border-radius: var(--radius-small, 6px);
+    background-color: #f9fafb;
+    font-size: 1rem;
+    color: var(--color-text, #20242a);
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+.attendance-controls select:focus {
+    border-color: var(--color-primary, #2563eb);
+    background-color: #ffffff;
+}
+
+/* --- ATTENDANCE BADGES --- */
+.status-badge.attended {
+    background-color: #d1fae5;
+    color: #065f46;
+    padding: 4px 10px;
+    border-radius: 9999px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.status-badge.missed,
+.status-badge.absent {
+    background-color: #fee2e2;
+    color: #991b1b;
+    padding: 4px 10px;
+    border-radius: 9999px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.status-badge.pending {
+    background-color: #fef3c7;
+    color: #92400e;
+    padding: 4px 10px;
+    border-radius: 9999px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+/* --- MOBILE RESPONSIVE FIX FOR ATTENDANCE --- */
+@media (max-width: 768px) {
+    .attendance-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .attendance-controls select {
+        max-width: 100%;
     }
 }
