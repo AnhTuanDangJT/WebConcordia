@@ -681,3 +681,30 @@
         align-items: flex-start;
     }
 }
+
+/* ========================================
+   Added by member3
+   for the view details button in the event cards
+   to look consistent.
+======================================== */
+.event-actions {
+    display: flex;
+    align-items: center;
+}
+
+.event-actions .view-details-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    color: var(--color-primary);
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    font-size: inherit;
+    font-family: inherit;
+}
+
+.event-actions .view-details-btn:hover,
+.event-actions .view-details-btn:focus {
+    text-decoration: underline;
+}
