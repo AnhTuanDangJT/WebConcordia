@@ -1,3 +1,5 @@
+<!--manage-events.html: Page for admins to view and manage scheduled campus events. By Tiago-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -41,6 +43,7 @@
                     <li><a href="/views/admin-dashboard.html">Dashboard</a></li>
                     <li><a href="/views/create-event.html">Create Event</a></li>
                     <li><a href="/views/manage-events.html" class="active">Manage Events</a></li>
+                    <li><a href="/views/attendance-management.html">Attendance</a></li>
                     <li><a href="/views/login.html" class="btn btn-primary">Logout</a></li>
                 </ul>
             </nav>
@@ -76,48 +79,9 @@
                             <th>Actions</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="events-table-body">
                         <tr>
-                            <td><strong>Tech Career Fair 2026</strong></td>
-                            <td>SGW (Downtown)</td>
-                            <td>July 24, 2026 @ 10:00 AM</td>
-                            <td>120 / 150 Registered</td>
-                            <!-- Updated status badge class -->
-                            <td><span class="badge badge-open">Active</span></td>
-                            <td>
-                                <div class="action-buttons">
-                                    <button class="btn btn-secondary">Edit</button>
-                                    <button class="btn btn-outline">Cancel</button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><strong>AI Workshop</strong></td>
-                            <td>Loyola Campus</td>
-                            <td>July 28, 2026 @ 2:00 PM</td>
-                            <td>50 / 50 (Full)</td>
-                            <!-- Updated status badge class -->
-                            <td><span class="badge badge-full">Full</span></td>
-                            <td>
-                                <div class="action-buttons">
-                                    <button class="btn btn-secondary">Edit</button>
-                                    <button class="btn btn-outline">Cancel</button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><strong>Concordia Concert Night</strong></td>
-                            <td>Loyola Campus</td>
-                            <td>Aug 02, 2026 @ 7:00 PM</td>
-                            <td>0 / 200 Registered</td>
-                            <!-- Updated status badge class -->
-                            <td><span class="badge badge-cancelled">Cancelled</span></td>
-                            <td>
-                                <div class="action-buttons">
-                                    <button class="btn btn-secondary">Edit</button>
-                                    <button class="btn btn-outline">Delete</button>
-                                </div>
-                            </td>
+                            <td colspan="6" style="text-align: center;">Loading events... If no events appear, make sure you are signed in as the event organizer.</td>
                         </tr>
                     </tbody>
                 </table>
@@ -167,5 +131,6 @@
         4. Ensure the table is fully responsive on mobile screens.
     -->
     <script src="/js/main.js"></script>
+    <script src="/js/admin.js"></script>
 </body>
 </html>
