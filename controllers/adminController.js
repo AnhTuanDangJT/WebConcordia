@@ -482,6 +482,13 @@ async function markAttendance(req, res) {
       });
     }
 
+    if (registration.status === "Cancelled") {
+      return res.status(400).json({
+        success: false,
+        message: "Cannot mark attendance for a cancelled registration",
+      });
+    }
+
     const attended = attendanceStatus === "Attended" ? "Yes" : "No";
 
     await run(
@@ -543,9 +550,22 @@ async function getDashboardStats(req, res) {
     const registrationsByCategory = await all(
       `SELECT e.category, COUNT(r.registration_id) as registration_count
        FROM events e
-       LEFT JOIN registrations r ON e.event_id = r.event_id
+       LEFT JOIN registrations r ON e.event_id = r.event_id AND r.status != 'Cancelled'
        GROUP BY e.category
        ORDER BY registration_count DESC`
+    );
+
+    const eventSeatFill = await all(
+      `SELECT
+         e.event_id AS id,
+         e.title,
+         e.capacity,
+         COUNT(r.registration_id) AS registration_count,
+         ROUND(COUNT(r.registration_id) * 100.0 / e.capacity, 1) AS seats_filled_percent
+       FROM events e
+       LEFT JOIN registrations r ON e.event_id = r.event_id AND r.status != 'Cancelled'
+       GROUP BY e.event_id
+       ORDER BY e.event_date DESC`
     );
 
     res.json({
@@ -560,6 +580,7 @@ async function getDashboardStats(req, res) {
         attendedStudents: attendedStudents.count,
         attendanceRate: `${attendanceRate}%`,
         registrationsByCategory,
+        eventSeatFill,
       },
     });
   } catch (error) {
