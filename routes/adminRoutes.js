@@ -9,26 +9,6 @@ const router = express.Router();
 // Apply session and role middleware to all admin routes
 router.use(validSession, checkRole("admin"));
 
-// Protected admin HTML pages
-router.get("/admin/dashboard", (req, res) => {
-  res.sendFile(path.join(__dirname, "..", "views", "admin-dashboard.html"));
-});
-router.get("/admin/create-event", (req, res) => {
-  res.sendFile(path.join(__dirname, "..", "views", "create-event.html"));
-});
-router.get("/admin/manage-events", (req, res) => {
-  res.sendFile(path.join(__dirname, "..", "views", "manage-events.html"));
-});
-router.get("/admin/edit-event", (req, res) => {
-  res.sendFile(path.join(__dirname, "..", "views", "edit-event.html"));
-});
-router.get("/admin/view-registrations", (req, res) => {
-  res.sendFile(path.join(__dirname, "..", "views", "view-registrations.html"));
-});
-router.get("/admin/attendance-management", (req, res) => {
-  res.sendFile(path.join(__dirname, "..", "views", "attendance-management.html"));
-});
-
 // ==================== EVENT ENDPOINTS ====================
 
 /**
