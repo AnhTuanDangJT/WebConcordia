@@ -46,45 +46,15 @@ function setupMobileNavigation() {
 
 function attachEventDetailsButtons() {
     document.querySelectorAll('.view-details-btn').forEach((button) => {
-        button.addEventListener('click', async () => {
+        button.addEventListener('click', () => {
             const eventId = button.dataset.eventId;
 
             if (!eventId) {
                 return;
             }
 
-            try {
-                const response = await fetch('/api/events/select', {
-                    method: 'POST',
-                    credentials: 'include',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ event_id: eventId })
-                });
-
-                const result = await response.json();
-
-                if (!response.ok || !result.success) {
-                    throw new Error(result.message || 'Unable to open event details');
-                }
-
-                const detailsResponse = await fetch(`/api/events/details/${encodeURIComponent(eventId)}`, {
-                    credentials: 'include'
-                });
-
-                const detailsResult = await detailsResponse.json();
-
-                if (!detailsResponse.ok || !detailsResult.success) {
-                    throw new Error(detailsResult.message || 'Unable to load event details');
-                }
-
-                sessionStorage.setItem('selectedEvent', JSON.stringify(detailsResult.data));
-                window.location.href = '/views/event-details.html';
-            } catch (error) {
-                console.error('Error navigating to event details:', error);
-                window.alert(error.message || 'Unable to open event details.');
-            }
+            window.location.href =
+                `/api/events/event-details?id=${encodeURIComponent(eventId)}`;
         });
     });
 }
@@ -374,7 +344,7 @@ async function updateNavigationForAuth() {
             `;
         } else {
             authNav.innerHTML = `
-                <li><a href="/views/student-dashboard.html">Dashboard</a></li>
+                <li><a href="/student/dashboard">Dashboard</a></li>
                 <li><a href="/api/auth/profile">Profile</a></li>
                 <li><button type="button" class="btn btn-secondary" id="logout-button">Logout</button></li>
             `;
