@@ -7,6 +7,9 @@ const router = express.Router();
 router.get("/", publicController.getHomePage);
 router.get("/about", publicController.getAboutPage);
 router.get("/contact", publicController.getContactPage);
+router.get("/events", publicController.getEventsPage);
+// Keep legacy header links working (views/ is not static)
+router.get("/views/events.html", publicController.getEventsPage);
 
 // pages must be served manually: these pages may be accessible even by those without a valid session
 router.get("/login", publicController.getLoginPage);
@@ -21,11 +24,8 @@ router.post(
 
 router.get("/api/health", publicController.healthCheck);
 router.get("/api/public/featured-events", publicController.getFeaturedEvents);
-<<<<<<< HEAD
 router.get("/api/public/events", publicController.getAllEvents);
-=======
 router.get("/api/public/events/:id", publicController.getEventDetails);
 router.get("/api/public/upcoming-events", publicController.getUpcomingEvents);
->>>>>>> 42d6043 (Complete registration and upcoming events integration)
 
 module.exports = router;

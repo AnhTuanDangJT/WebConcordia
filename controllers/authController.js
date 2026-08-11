@@ -138,12 +138,9 @@ async function login(req, res) {
         if(passwordMatch)
         {
             req.session.user_id = user.user_id;
-           let redirect = "/";
+            let redirect = "/";
 
-<<<<<<< HEAD
-            // currently will result in status 404 because these routes are not implemented yet.
-            switch(user.role)
-            {
+            switch (user.role) {
                 case userModel.studentRole:
                     redirect = "/student/dashboard";
                     break;
@@ -155,20 +152,6 @@ async function login(req, res) {
                 success: true,
                 redirect,
             });
-=======
-switch(user.role)
-{
-    case userModel.studentRole:
-        redirect = "/views/student-dashboard.html";
-        break;
-    case userModel.adminRole:
-        redirect = "/views/admin-dashboard.html";
-        break;
-}
-
-res.redirect(redirect);
->>>>>>> 42d6043 (Complete registration and upcoming events integration)
-
         }
         else
             throw new Error();
