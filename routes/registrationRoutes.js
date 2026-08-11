@@ -5,7 +5,8 @@ const {
     getMyRegistrations,
     getUpcomingRegistrations,
     getSummary,
-    cancel
+    cancel,
+    cancelRegistration
 } = require("../controllers/registrationController");
 
 const { validSession } = require("../middleware/authMiddleware");
@@ -25,5 +26,8 @@ router.patch(
     validSession,
     cancel
 );
+
+router.post("/cancel/:eventId", validSession, cancelRegistration);
+router.post("/cancel", validSession, cancelRegistration);
 
 module.exports = router;

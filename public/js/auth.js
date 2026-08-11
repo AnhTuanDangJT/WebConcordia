@@ -32,6 +32,7 @@ async function send(url, useMethod, arguments)
     return fetch(url, 
     {
         method: useMethod,
+        credentials: "same-origin",
         headers: 
         {
             "Content-Type": "application/json",
@@ -85,12 +86,11 @@ document.addEventListener("DOMContentLoaded", async () => {
                             role: roleSlider.checked ? "admin" : "student"
                     });
 
-
+                const responseData = await response.json().catch(() => null);
                 const check = await receiveResponse(response, "log in", authMessage, true);
-                if(check)
+                if(check && responseData?.redirect)
                 {
-                    if(response.redirected)
-                        window.location.href = response.url;
+                    window.location.href = responseData.redirect;
                 }
             } 
             catch (error) 
@@ -129,14 +129,15 @@ document.addEventListener("DOMContentLoaded", async () => {
                         role: roleSlider.checked ? "admin" : "student"
                     });
 
+                const responseData = await response.json().catch(() => null);
                 const check = await receiveResponse(response, "register", authMessage, true);
                 if(check)
                 {
                     authMessage.textContent = "Registration successful";
                     authMessage.classList.add("success");
                     submitButton.disabled = true;
-                    if(response.redirected)
-                        setTimeout(() => { window.location.href = response.url; }, 1000);
+                    if(responseData?.redirect)
+                        setTimeout(() => { window.location.href = responseData.redirect; }, 1000);
                 }
             } 
             catch (error) 

@@ -86,9 +86,12 @@ async function registerUser(req, res) {
     }
     catch(error)
     {
-        redirect = "/views/login.html";
+        redirect = "/login";
     }
-    res.redirect(redirect);
+    res.status(200).json({
+        success: true,
+        redirect,
+    });
 }
 
 async function logout(req, res) {
@@ -143,13 +146,16 @@ async function login(req, res) {
             switch(user.role)
             {
                 case userModel.studentRole:
-                    redirect = "/api/student/dashboard";
+                    redirect = "/student/dashboard";
                     break;
                 case userModel.adminRole:
-                    redirect = "/api/admin/dashboard";
+                    redirect = "/admin/dashboard";
                     break;
             }
-            res.redirect(redirect);
+            res.status(200).json({
+                success: true,
+                redirect,
+            });
 
         }
         else

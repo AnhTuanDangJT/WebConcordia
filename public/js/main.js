@@ -43,6 +43,67 @@ function setupMobileNavigation() {
     });
 }
 
+
+function attachEventDetailsButtons() {
+    document.querySelectorAll('.view-details-btn').forEach((button) => {
+        button.addEventListener('click', async () => {
+            const eventId = button.dataset.eventId;
+
+            if (!eventId) {
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/events/select', {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ event_id: eventId })
+                });
+
+                const result = await response.json();
+
+                if (!response.ok || !result.success) {
+                    throw new Error(result.message || 'Unable to open event details');
+                }
+
+                const detailsResponse = await fetch(`/api/events/details/${encodeURIComponent(eventId)}`, {
+                    credentials: 'include'
+                });
+
+                const detailsResult = await detailsResponse.json();
+
+                if (!detailsResponse.ok || !detailsResult.success) {
+                    throw new Error(detailsResult.message || 'Unable to load event details');
+                }
+
+                sessionStorage.setItem('selectedEvent', JSON.stringify(detailsResult.data));
+                window.location.href = '/views/event-details.html';
+            } catch (error) {
+                console.error('Error navigating to event details:', error);
+                window.alert(error.message || 'Unable to open event details.');
+            }
+        });
+    });
+}
+
+function createEventListRow(event) {
+    const statusClass = getStatusBadgeClass(event.status);
+
+    return `
+        <tr>
+            <td>${escapeHtml(event.category)}</td>
+            <td>${escapeHtml(formatDate(event.event_date))}</td>
+            <td>${escapeHtml(event.title)}</td>
+            <td>${escapeHtml(event.start_time)} – ${escapeHtml(event.end_time)}<br>${escapeHtml(event.location)}</td>
+            <td><span class="badge ${statusClass}">${escapeHtml(event.status)}</span></td>
+            <td><button type="button" class="event-link view-details-btn" data-event-id="${escapeHtml(event.event_id)}">View</button></td>
+        </tr>
+    `;
+}
+
 function setupContactForm() {
     const contactForm = document.querySelector("#contact-form");
     const contactFormMessage = document.querySelector("#contact-form-message");
@@ -158,6 +219,9 @@ async function loadFeaturedEvents() {
         if (heroCard && events[0]) {
             heroCard.innerHTML = createHeroEventHtml(events[0]);
         }
+
+        // Attach AFTER all buttons have been created
+        attachEventDetailsButtons();
     } catch (error) {
         console.error("Failed to load featured events:", error);
     }
@@ -184,9 +248,15 @@ function createEventCardHtml(event) {
                 <span>${escapeHtml(event.location)}</span>
             </div>
 
-            <a href="/views/event-details.html?id=${event.event_id}" class="event-link">
-                View details →
-            </a>
+            <div class="event-actions">
+                <button
+                    type="button"
+                    class="event-link view-details-btn"
+                    data-event-id="${escapeHtml(event.event_id)}"
+                >
+                    View details →
+                </button>
+            </div>
         </article>
     `;
 }
@@ -216,9 +286,13 @@ function createHeroEventHtml(event) {
             <li><strong>Organizer:</strong> ${escapeHtml(event.organizer_name || "Campus Organizer")}</li>
         </ul>
 
-        <a href="/views/event-details.html?id=${event.event_id}" class="btn btn-primary">
+        <button
+            type="button"
+            class="btn btn-primary view-details-btn"
+            data-event-id="1"
+        >
             View Event
-        </a>
+        </button>
     `;
 }
 

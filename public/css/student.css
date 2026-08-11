@@ -217,6 +217,26 @@ h1,h2,h3,h4 {
   align-items: center;
   justify-content: space-between; /* Pushes items to opposite sides */
   width: 100%;                    /* Ensures container spans the full card width */
+  gap: 0.5rem;
+}
+
+.event-actions .view-details-btn,
+.registered-events-table .view-details-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    color: var(--color-primary);
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    font-size: inherit;
+}
+
+.event-actions .view-details-btn:hover,
+.registered-events-table .view-details-btn:hover,
+.event-actions .view-details-btn:focus,
+.registered-events-table .view-details-btn:focus {
+    text-decoration: underline;
 }
 
 

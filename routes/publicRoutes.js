@@ -21,5 +21,6 @@ router.post(
 
 router.get("/api/health", publicController.healthCheck);
 router.get("/api/public/featured-events", publicController.getFeaturedEvents);
+router.get("/api/public/events", publicController.getAllEvents);
 
 module.exports = router;

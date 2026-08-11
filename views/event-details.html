@@ -16,6 +16,7 @@
         }
     </style>
     <script src="/js/main.js" defer></script>
+    <script src="/js/event-details.js" defer></script>
 </head>
 <body>
     <!-- Shared header -->
@@ -78,28 +79,22 @@
     <section class="page-header" style = "background-color:rgb(255, 254, 236);">        
         <!-- Events Summary -->
         <div class="container">
-            <h2>Web Development Workshop</h2>
+            <h2 id="eventTitle">Web Development Workshop</h2>
             <!-- Event Category -->
-            <span class="event-category">
-                Academic Workshop
-            </span>
-            <p class="card-text">
-                Learn practical techniques for creating modern,
-                responsive websites.
-            </p>
+            <span class="event-category" id="eventCategory"></span>
+            
             <!-- Organizer -->
-            <p class="card-text">
-                Organized by the Computer Science Society
-            </p>
+            <p class="card-text" id="eventOrganizer"></p>
+
             <!-- Event Date and Location -->
             <div style="margin-bottom: 5px;">
-                <p class="event-card-date" style="margin-bottom: 2px;">August 5, 2026</p>
-                <p>1:00 PM – 3:00 PM</p>
-                <p>Hall Building</p>
+                <p class="event-card-date" style="margin-bottom: 2px;" id="eventDate"></p>
+                <p id="eventTime">1:00 PM – 3:00 PM</p>
+                <p id="eventLocation"></p>
 
-                <p style="margin-bottom: 0px;">600 capacity</p>
-                <p>521 people registered</p>
-                <span class="badge badge-open">Open</span>
+                <p style="margin-bottom: 0px;" id="eventCapacity"></p>
+                <p id="eventRegisteredCount"></p>
+                <span class="badge badge-open" id="eventStatus">Closed</span>
 
                 <a href="/views/register.html" class="btn btn-primary" style="width: 100px;">
                      register
@@ -112,9 +107,7 @@
     <section style="padding-top: 20px;">
         <div class="container">
             <h3>Event Description</h3>
-            <p>
-                This workshop is designed for beginners who want to learn the fundamentals of web development. You will gain hands-on experience with HTML, CSS, and JavaScript to create responsive and visually appealing websites.
-            </p>
+            <p id="eventDescriptionShort"></p>
         </div>
     </section>
 

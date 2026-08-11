@@ -11,7 +11,8 @@ async function testUser(req, next)
         throw new Error();
     const user = await findById(user_id);
     req.user = user;
-            next();
+    if(next)
+        next();
 }
 
 
