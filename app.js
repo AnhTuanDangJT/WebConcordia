@@ -11,6 +11,7 @@ const { authRouter } = require("./routes/authRoutes");
 const eventRoutes = require("./routes/eventRoutes");
 const registrationRoutes = require("./routes/registrationRoutes");
 const adminRoutes = require("./routes/adminRoutes");
+const adminPageRoutes = require("./routes/adminPageRoutes");
 const studentRoutes = require("./routes/studentRoutes");
 
 const app = express();
@@ -45,6 +46,7 @@ app.use("/api/auth", authRouter);
 app.use("/api/events", eventRoutes);
 app.use("/api/registrations", registrationRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/admin", adminPageRoutes);
 app.use("/api/student", studentRoutes);
 
 app.use((req, res) => {
