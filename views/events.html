@@ -14,6 +14,7 @@
  
     </style>
     <script src="/js/main.js" defer></script>
+    <script src="/js/events.js" defer></script>
 </head>
 <body>
     <!-- Shared header -->
@@ -111,12 +112,6 @@
                             <option value="Networking events">
                                 Networking Event
                             </option>
-                            <option value="Club Activity">
-                                Club Activity
-                            </option>
-                            <option value="Sports Event">
-                                Sports Event
-                            </option>
                         </select>
                     </div>
 
@@ -135,11 +130,14 @@
                             <option value="Hall Building">
                                 Hall Building
                             </option>
-                            <option value="JMSB Building">
-                                JMSB Building
+                            <option value="John Molson Building">
+                                John Molson Building
                             </option>
-                            <option value="Loyola Campus">
-                                Loyola Campus
+                            <option value="MB Building">
+                                MB Building
+                            </option>
+                            <option value="EV Building">
+                                EV Building
                             </option>
                         </select>
                     </div>
@@ -163,7 +161,7 @@
                         <label for="status-filter">Status</label>
                         <select id="status-filter">
                             <option value="All">All statuses</option>
-                            <option value="Open">Open</option>
+                            <option value="Open" selected>Open</option>
                             <option value="Full">Full</option>
                             <option value="Cancelled">Cancelled</option>
                             <option value="Completed">Completed</option>
@@ -185,6 +183,9 @@
     <!-- Events gallery -->
     <section id="registeredEventsSection" class="page-section featured-events registered-events-section card-view" style="padding-top: 20px;">
         <div class="container">
+            <form action="/events/redirect" method="post" id="eventRedirectForm" class="visually-hidden">
+                <input type="hidden" name="event_id" id="eventRedirectId">
+            </form>
             <div class="section-heading">
                 <div class="view-toggle-toolbar" role="group" aria-label="Events view toggle">
                     <span class="view-toggle-label">View:</span>

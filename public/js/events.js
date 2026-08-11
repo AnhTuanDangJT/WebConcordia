@@ -2,12 +2,162 @@
 // this script fetches the logged-in student's name from the server
 // and displays it in the welcome message.
 // It uses the Fetch API to call the student dashboard data endpoint.
+let eventPageEvents = [];
+
 document.addEventListener("DOMContentLoaded", () => {
-    loadStudentDashboard();
-    loadStudentEvents();
-    setupEventsViewToggle();
-    setupEventsTypeSelector();
+    // events.html
+    const eventSearch = document.getElementById('event-search');
+
+    if (eventSearch) {
+        setupEventPage();
+        setupEventsViewToggle();
+    }
+
+    // student-dashboard.html
+    const studentName = document.getElementById('studentName');
+
+    if (studentName) {
+        loadStudentDashboard();
+        loadStudentEvents();
+        setupEventsTypeSelector();
+        setupEventsViewToggle();
+    }
+
 });
+
+function setupEventPage() {
+    const eventSection = document.getElementById('registeredEventsSection');
+    if (!eventSection) {
+        return;
+    }
+
+    setupEventFilters();
+    loadEventPageEvents();
+}
+
+function setupEventFilters() {
+    const searchInput = document.querySelector('#event-search');
+    const categoryFilter = document.querySelector('#category-filter');
+    const dateFilter = document.querySelector('#date-filter');
+    const locationFilter = document.querySelector('#location-filter');
+    const organizerFilter = document.querySelector('#organizer-filter');
+    const statusFilter = document.querySelector('#status-filter');
+    const clearFiltersButton = document.querySelector('#clear-filters');
+
+    if (!searchInput || !categoryFilter || !dateFilter || !locationFilter || !organizerFilter || !statusFilter || !clearFiltersButton) {
+        return;
+    }
+
+    const applyFilters = () => {
+        const filtered = filterEventPageEvents();
+        renderEventPageEvents(filtered);
+    };
+
+    [searchInput, categoryFilter, dateFilter, locationFilter, organizerFilter, statusFilter].forEach((input) => {
+        input.addEventListener('input', applyFilters);
+    });
+
+    clearFiltersButton.addEventListener('click', () => {
+        searchInput.value = '';
+        categoryFilter.value = '';
+        dateFilter.value = '';
+        locationFilter.value = '';
+        organizerFilter.value = '';
+        statusFilter.value = 'All';
+        applyFilters();
+    });
+}
+
+function filterEventPageEvents() {
+    const searchValue = document.querySelector('#event-search')?.value.trim().toLowerCase() || '';
+    const categoryValue = document.querySelector('#category-filter')?.value || '';
+    const dateValue = document.querySelector('#date-filter')?.value || '';
+    const locationValue = document.querySelector('#location-filter')?.value || '';
+    const organizerValue = document.querySelector('#organizer-filter')?.value || '';
+    const statusValue = document.querySelector('#status-filter')?.value || 'All';
+
+    return eventPageEvents.filter((event) => {
+        if (searchValue) {
+            const title = String(event.title || '').toLowerCase();
+            const description = String(event.description || '').toLowerCase();
+            if (!title.includes(searchValue) && !description.includes(searchValue)) {
+                return false;
+            }
+        }
+
+        if (categoryValue && event.category !== categoryValue) {
+            return false;
+        }
+
+        if (dateValue && event.event_date !== dateValue) {
+            return false;
+        }
+
+        if (locationValue && event.location !== locationValue) {
+            return false;
+        }
+
+        if (organizerValue && event.organizer_name !== organizerValue) {
+            return false;
+        }
+
+        if (statusValue !== 'All' && event.status !== statusValue) {
+            return false;
+        }
+
+        return true;
+    });
+}
+
+async function loadEventPageEvents() {
+    const grid = document.getElementById('registeredEventsGrid');
+    const listBody = document.querySelector('#registeredEventsList tbody');
+
+    if (!grid || !listBody) {
+        return;
+    }
+
+    try {
+        const response = await fetch('/api/public/events');
+        const result = await response.json();
+
+        if (!response.ok || !result.success) {
+            throw new Error(result.message || 'Failed to load events');
+        }
+
+        eventPageEvents = result.data || [];
+        renderEventPageEvents(filterEventPageEvents());
+    } catch (error) {
+        console.error('Error loading event page data:', error);
+        grid.innerHTML = '<p class="card-text">Unable to load events.</p>';
+        listBody.innerHTML = '<tr><td colspan="6">Unable to load events.</td></tr>';
+    }
+}
+
+function renderEventPageEvents(events) {
+    const grid = document.getElementById('registeredEventsGrid');
+    const listBody = document.querySelector('#registeredEventsList tbody');
+
+    if (!grid || !listBody) {
+        return;
+    }
+
+    if (!events.length) {
+        grid.innerHTML = '<p class="card-text">No events found.</p>';
+        listBody.innerHTML = '<tr><td colspan="6">No events found.</td></tr>';
+        return;
+    }
+
+    grid.innerHTML = '';
+    listBody.innerHTML = '';
+
+    events.forEach((event) => {
+        grid.insertAdjacentHTML('beforeend', createEventCardHtml(event));
+        listBody.insertAdjacentHTML('beforeend', createEventListRow(event));
+    });
+
+    attachEventDetailsButtons();
+}
 
 function setupEventsViewToggle() {
     const section = document.getElementById('registeredEventsSection');
@@ -111,10 +261,105 @@ function renderStudentEvents(events, filter = 'registered') {
         registeredEventsGrid.insertAdjacentHTML('beforeend', createStudentEventCardHtml(event));
         registeredEventsListBody.insertAdjacentHTML('beforeend', createStudentEventTableRow(event));
     });
+
+    attachCancelButtons();
+    attachViewDetailsButtons();
+}
+
+function attachViewDetailsButtons() {
+    document.querySelectorAll('.view-details-btn').forEach((button) => {
+        button.addEventListener('click', async () => {
+            const eventId = button.dataset.eventId;
+
+            if (!eventId) {
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/events/select', {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ event_id: eventId })
+                });
+
+                const result = await response.json();
+
+                if (!response.ok || !result.success) {
+                    throw new Error(result.message || 'Unable to open event details');
+                }
+
+                const detailsResponse = await fetch(`/api/events/details/${encodeURIComponent(eventId)}`, {
+                    credentials: 'include'
+                });
+
+                const detailsResult = await detailsResponse.json();
+
+                if (!detailsResponse.ok || !detailsResult.success) {
+                    throw new Error(detailsResult.message || 'Unable to load event details');
+                }
+
+                sessionStorage.setItem('selectedEvent', JSON.stringify(detailsResult.data));
+                window.location.href = '/views/event-details.html';
+            } catch (error) {
+                console.error('Error navigating to event details:', error);
+                window.alert(error.message || 'Unable to open event details.');
+            }
+        });
+    });
+}
+
+function attachCancelButtons() {
+    document.querySelectorAll('.cancel-icon-btn').forEach((button) => {
+        button.addEventListener('click', async () => {
+            const eventId = button.dataset.eventId;
+
+            if (!eventId) {
+                return;
+            }
+
+            const confirmed = window.confirm('Cancel this registration?');
+            if (!confirmed) {
+                return;
+            }
+
+            button.disabled = true;
+            button.textContent = 'Cancelling...';
+
+            try {
+                const response = await fetch(`/api/registrations/cancel/${encodeURIComponent(eventId)}`, {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const result = await response.json();
+
+                if (!response.ok || !result.success) {
+                    throw new Error(result.message || 'Unable to cancel registration');
+                }
+
+                button.textContent = 'Cancelled';
+                button.classList.add('is-cancelled');
+
+                await loadStudentEvents();
+            } catch (error) {
+                console.error('Error cancelling registration:', error);
+                button.disabled = false;
+                button.textContent = 'Cancel';
+                window.alert(error.message || 'Unable to cancel registration.');
+            }
+        });
+    });
 }
 
 function createStudentEventCardHtml(event) {
     const statusClass = getStatusBadgeClass(event.status);
+    const showCancelButton = event.registration_status !== 'Cancelled';
 
     return `
         <article class="card event-card">
@@ -135,10 +380,10 @@ function createStudentEventCardHtml(event) {
             </div>
 
             <div class="event-actions">
-                <a href="/views/event-details.html?id=${encodeURIComponent(event.event_id)}" class="event-link">
+                <button type="button" class="event-link view-details-btn" data-event-id="${escapeHtml(event.event_id)}">
                     View details →
-                </a>
-                <button type="button" class="cancel-icon-btn">Cancel</button>
+                </button>
+                ${showCancelButton ? `<button type="button" class="cancel-icon-btn" data-event-id="${escapeHtml(event.event_id)}">Cancel</button>` : ''}
             </div>
         </article>
     `;
@@ -146,6 +391,7 @@ function createStudentEventCardHtml(event) {
 
 function createStudentEventTableRow(event) {
     const statusClass = getStatusBadgeClass(event.status);
+    const showCancelButton = event.registration_status !== 'Cancelled';
 
     return `
         <tr>
@@ -155,8 +401,8 @@ function createStudentEventTableRow(event) {
             <td>${escapeHtml(event.start_time)} – ${escapeHtml(event.end_time)}<br>${escapeHtml(event.location)}</td>
             <td><span class="badge ${statusClass}">${escapeHtml(event.status)}</span></td>
             <td>
-                <a href="/views/event-details.html?id=${encodeURIComponent(event.event_id)}" class="event-link">View</a>
-                <button type="button" class="cancel-icon-btn">Cancel</button>
+                <button type="button" class="event-link view-details-btn" data-event-id="${escapeHtml(event.event_id)}">View</button>
+                ${showCancelButton ? `<button type="button" class="cancel-icon-btn" data-event-id="${escapeHtml(event.event_id)}">Cancel</button>` : ''}
             </td>
         </tr>
     `;
