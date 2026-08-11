@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 document.addEventListener('DOMContentLoaded', () => {
     renderEventDetails();
 });
@@ -44,3 +45,108 @@ function formatDate(dateString) {
         day: 'numeric'
     });
 }
+=======
+document.addEventListener("DOMContentLoaded", async () => {
+    const params = new URLSearchParams(window.location.search);
+    const eventId = params.get("id");
+
+    if (!eventId) {
+        console.error("No event ID in URL.");
+        return;
+    }
+
+    try {
+        const response = await fetch(`/api/public/events/${eventId}`);
+        const result = await response.json();
+
+        if (!response.ok || !result.success) {
+            console.error(result.message || "Unable to load event.");
+            return;
+        }
+
+        const event = result.data;
+
+        // Title
+        document.querySelector(".page-header h2").textContent =
+            event.title;
+
+        // Category
+        document.querySelector(".event-category").textContent =
+            event.category;
+
+        // Short description
+        document.querySelector(".page-header .card-text").textContent =
+            event.description;
+
+        // Organizer
+        const cardTexts =
+            document.querySelectorAll(".page-header .card-text");
+
+        if (cardTexts.length >= 2) {
+            cardTexts[1].textContent =
+                `Organized by ${event.organizer_name}`;
+        }
+
+        // Date
+        document.querySelector(".event-card-date").textContent =
+            event.event_date;
+
+        // Time and location
+        const detailContainer =
+            document.querySelector(".page-header div[style*='margin-bottom']");
+
+        if (detailContainer) {
+            const paragraphs =
+                detailContainer.querySelectorAll("p");
+
+            if (paragraphs.length >= 5) {
+                paragraphs[1].textContent =
+                    `${event.start_time} – ${event.end_time}`;
+
+                paragraphs[2].textContent =
+                    event.location;
+
+                paragraphs[3].textContent =
+                    `${event.capacity} capacity`;
+
+                paragraphs[4].textContent =
+                    `${event.registration_count} people registered`;
+            }
+        }
+
+        // Status
+        const statusBadge =
+            document.querySelector(".page-header .badge");
+
+        if (statusBadge) {
+            statusBadge.textContent = event.status;
+            statusBadge.className =
+                `badge badge-${event.status.toLowerCase()}`;
+        }
+
+        // Registration button
+        const registerButton =
+            document.getElementById("register-event-btn");
+
+        if (registerButton) {
+            registerButton.dataset.eventId = event.event_id;
+
+            if (event.status !== "Open") {
+                registerButton.disabled = true;
+                registerButton.textContent = event.status;
+            }
+        }
+
+        // Full event description
+        const descriptionSection =
+            document.querySelector("section[style*='padding-top'] p");
+
+        if (descriptionSection) {
+            descriptionSection.textContent = event.description;
+        }
+
+    } catch (error) {
+        console.error("Error loading event:", error);
+    }
+});
+>>>>>>> 42d6043 (Complete registration and upcoming events integration)

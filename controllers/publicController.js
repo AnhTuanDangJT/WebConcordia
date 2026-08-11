@@ -129,7 +129,11 @@ function getFeaturedEvents(req, res, next) {
       });
     });
   }
+async function getEventDetails(req, res, next) {
+    try {
+        const { get } = require("../database/database");
 
+<<<<<<< HEAD
   function getAllEvents(req, res, next) {
     const sql = `
       SELECT
@@ -162,6 +166,88 @@ function getFeaturedEvents(req, res, next) {
     });
   }
 
+=======
+        const event = await get(
+            `SELECT
+                e.event_id,
+                e.title,
+                e.description,
+                e.category,
+                e.event_date,
+                e.start_time,
+                e.end_time,
+                e.location,
+                e.capacity,
+                e.status,
+                u.full_name AS organizer_name,
+                COUNT(
+                    CASE
+                        WHEN r.status = 'Registered' THEN 1
+                        ELSE NULL
+                    END
+                ) AS registration_count
+             FROM events e
+             JOIN users u ON e.organizer_id = u.user_id
+             LEFT JOIN registrations r ON e.event_id = r.event_id
+             WHERE e.event_id = ?
+             GROUP BY e.event_id`,
+            [req.params.id]
+        );
+
+        if (!event) {
+            return res.status(404).json({
+                success: false,
+                message: "Event not found."
+            });
+        }
+
+        res.json({
+            success: true,
+            data: event
+        });
+
+    } catch (error) {
+        next(error);
+    }
+}
+function getUpcomingEvents(req, res, next) {
+  const sql = `
+    SELECT
+      e.event_id,
+      e.title,
+      e.description,
+      e.category,
+      e.event_date,
+      e.start_time,
+      e.end_time,
+      e.location,
+      e.capacity,
+      e.status,
+      COUNT(
+        CASE
+          WHEN r.status = 'Registered' THEN 1
+          ELSE NULL
+        END
+      ) AS registration_count
+    FROM events e
+    LEFT JOIN registrations r ON e.event_id = r.event_id
+    WHERE e.event_date >= date('now')
+    GROUP BY e.event_id
+    ORDER BY e.event_date ASC, e.start_time ASC
+  `;
+
+  db.all(sql, [], (err, rows) => {
+    if (err) {
+      return next(err);
+    }
+
+    res.status(200).json({
+      success: true,
+      events: rows
+    });
+  });
+}
+>>>>>>> 42d6043 (Complete registration and upcoming events integration)
   module.exports = {
     getHomePage,
     getAboutPage,
@@ -172,5 +258,7 @@ function getFeaturedEvents(req, res, next) {
     getFeaturedEvents,
     getAllEvents,
     getLoginPage,
-    getRegistrationPage
+    getRegistrationPage,
+    getEventDetails,
+    getUpcomingEvents
   };
