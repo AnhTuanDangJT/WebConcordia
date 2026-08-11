@@ -10,7 +10,7 @@ const errorMiddleware = require("./middleware/errorMiddleware");
 // Teammates will add these later:
 const { authRouter } = require("./routes/authRoutes");
 // const eventRoutes = require("./routes/eventRoutes");
-// const registrationRoutes = require("./routes/registrationRoutes");
+const registrationRoutes = require("./routes/registrationRoutes");
 // const adminRoutes = require("./routes/adminRoutes");
 const studentRoutes = require("./routes/studentRoutes"); //added by member3
 
@@ -44,7 +44,7 @@ app.use("/", publicRoutes);
 
 app.use("/api/auth", authRouter);
 // app.use("/api/events", eventRoutes);
-// app.use("/api/registrations", registrationRoutes);
+app.use("/api/registrations", registrationRoutes);
 // app.use("/api/admin", adminRoutes);
 app.use("/api/students", studentRoutes);
 
