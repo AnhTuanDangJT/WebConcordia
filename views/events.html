@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Events | CampusConnect</title>
 
-        <link rel="stylesheet" href="/css/global.css">
+    <link rel="stylesheet" href="/css/global.css">
     <link rel="stylesheet" href="/css/public-pages.css">
 
     <link rel="stylesheet" type="text/css" href="/css/student.css">
@@ -40,26 +40,11 @@
                 aria-label="Main navigation"
             >
                 <ul class="nav-links">
-                    <li>
-                        <a href="/">Home</a>
-                    </li>
-
-                    <li>
-                        <a href="/views/events.html"  class="active">Events</a>
-                    </li>
-
-                    <li>
-                        <a href="/about">About</a>
-                    </li>
-
-                    <li>
-                        <a href="/contact">Contact</a>
-                    </li>
-
-                    <li>
-                        <a href="/views/login.html">Login</a>
-                    </li>
-
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/views/events.html"  class="active">Events</a></li>
+                    <li><a href="/about">About</a></li>
+                    <li><a href="/contact">Contact</a></li>
+                    <li><a href="/views/login.html">Login</a></li>
                     <li>
                         <a
                             href="/views/register.html"
@@ -87,9 +72,9 @@
 
             <!-- Filter controls -->
             <section class="event-controls">
+                <!-- Search Filter -->
                 <div class="search-container">
                     <label for="event-search">Search events</label>
-
                     <input
                         type="search"
                         id="event-search"
@@ -98,74 +83,35 @@
                 </div>
 
                 <div class="filter-grid">
+
+                    <!-- Category Filter -->
                     <div class="filter-group">
                         <label for="category-filter">Category</label>
-
-                        <select id="category-filter">
-                            <option value="">All categories</option>
-                            <option value="Academic workshops">
-                                Academic Workshop
-                            </option>
-                            <option value="Career events">
-                                Career Event
-                            </option>
-                            <option value="Networking events">
-                                Networking Event
-                            </option>
-                        </select>
+                        <select id="category-filter"></select>
                     </div>
 
                     <!-- Date Filter -->
                     <div class="filter-group">
                         <label for="date-filter">Date</label>
-
                         <input type="date" id="date-filter">
                     </div>
 
+                    <!-- Location Filter -->
                     <div class="filter-group">
                         <label for="location-filter">Location</label>
-
-                        <select id="location-filter">
-                            <option value="">All locations</option>
-                            <option value="Hall Building">
-                                Hall Building
-                            </option>
-                            <option value="John Molson Building">
-                                John Molson Building
-                            </option>
-                            <option value="MB Building">
-                                MB Building
-                            </option>
-                            <option value="EV Building">
-                                EV Building
-                            </option>
-                        </select>
+                        <select id="location-filter"></select>
                     </div>
 
+                    <!-- Organizer Filter -->
                     <div class="filter-group">
                         <label for="organizer-filter">Organizer</label>
-
-                        <select id="organizer-filter">
-                            <option value="">All organizers</option>
-                            <option value="Computer Science Society">
-                                Computer Science Society
-                            </option>
-                            <option value="Career Management Services">
-                                Career Management Services
-                            </option>
-                        </select>
+                        <select id="organizer-filter"></select>
                     </div>
 
                     <!-- Status Filter -->
                     <div class="filter-group">
                         <label for="status-filter">Status</label>
-                        <select id="status-filter">
-                            <option value="All">All statuses</option>
-                            <option value="Open" selected>Open</option>
-                            <option value="Full">Full</option>
-                            <option value="Cancelled">Cancelled</option>
-                            <option value="Completed">Completed</option>
-                        </select>
+                        <select id="status-filter"></select>
                     </div>
 
                     <button

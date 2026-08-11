@@ -1,5 +1,29 @@
 const { db } = require('../database/database');
 
+const Event = require('../models/Event');
+
+const getEvents = async (req, res, next) => {
+    try {
+        const filters = {
+            search: req.query.search,
+            category: req.query.category,
+            date: req.query.date,
+            location: req.query.location,
+            organizer: req.query.organizer,
+            status: req.query.status
+        };
+
+        const events = await Event.getAllWithRegistrationCount(filters);
+
+        return res.status(200).json({
+            success: true,
+            data: events
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 const selectEventForDetails = async (req, res) => {
     const eventId = req.body?.event_id || req.body?.eventId;
 
@@ -39,10 +63,16 @@ const getEventDetails = (req, res, next) => {
             e.capacity,
             e.status,
             u.full_name AS organizer_name,
-            COUNT(r.registration_id) AS registration_count
+            COUNT(r.registration_id) AS registration_count,
+            CASE
+                WHEN e.capacity - COUNT(r.registration_id) < 0 THEN 0
+                ELSE e.capacity - COUNT(r.registration_id)
+            END AS remaining_seats
         FROM events e
         JOIN users u ON e.organizer_id = u.user_id
-        LEFT JOIN registrations r ON e.event_id = r.event_id
+        LEFT JOIN registrations r 
+            ON e.event_id = r.event_id
+            AND r.status != 'Cancelled'
         WHERE e.event_id = ?
         GROUP BY e.event_id
     `;
@@ -66,7 +96,46 @@ const getEventDetails = (req, res, next) => {
     });
 };
 
+const getSuggestedEvents = async (req, res, next) => {
+    try {
+        const userId = req.user?.user_id;
+
+        if (!userId) {
+            return res.status(401).json({
+                success: false,
+                message: 'User not authenticated'
+            });
+        }
+
+        const events = await Event.getSuggestedEvents(userId);
+
+        return res.status(200).json({
+            success: true,
+            data: events
+        });
+
+    } catch (error) {
+        next(error);
+    }
+};
+
+const getEventFilterOptions = async (req, res, next) => {
+    try {
+        const options = await Event.getFilterOptions();
+
+        return res.status(200).json({
+            success: true,
+            data: options
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 module.exports = {
+    getEvents,
     selectEventForDetails,
-    getEventDetails
+    getEventDetails,
+    getSuggestedEvents,
+    getEventFilterOptions
 };

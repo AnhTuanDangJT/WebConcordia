@@ -20,6 +20,7 @@ function renderEventDetails() {
     const time = document.getElementById('eventTime');
     const capacity = document.getElementById('eventCapacity');
     const registeredCount = document.getElementById('eventRegisteredCount');
+    const remainingSeats = document.getElementById('eventRemainingSeats');
     const status = document.getElementById('eventStatus');
     const descriptionSection = document.getElementById('eventDescriptionLong');
 
@@ -32,6 +33,7 @@ function renderEventDetails() {
     if (time) time.textContent = `${event.start_time} – ${event.end_time}`;
     if (capacity) capacity.textContent = `${event.capacity} capacity`;
     if (registeredCount) registeredCount.textContent = `${event.registration_count} people registered`;
+    if (remainingSeats) remainingSeats.textContent = `${event.remaining_seats} seats remaining`;
     if (status) status.textContent = event.status;
     if (descriptionSection) descriptionSection.textContent = event.description;
 }

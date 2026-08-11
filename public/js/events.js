@@ -19,23 +19,119 @@ document.addEventListener("DOMContentLoaded", () => {
     if (studentName) {
         loadStudentDashboard();
         loadStudentEvents();
+        loadSuggestedEvents();
+
         setupEventsTypeSelector();
         setupEventsViewToggle();
     }
-
 });
 
-function setupEventPage() {
+async function setupEventPage() {
     const eventSection = document.getElementById('registeredEventsSection');
     if (!eventSection) {
         return;
     }
 
+    await loadEventFilterOptions();
+
     setupEventFilters();
     loadEventPageEvents();
 }
 
-function setupEventFilters() {
+async function loadEventFilterOptions() {
+    try {
+        const response = await fetch('/api/events/filter-options');
+
+        const result = await response.json();
+
+        if (!response.ok || !result.success) {
+            throw new Error(
+                result.message || 'Failed to load filter options'
+            );
+        }
+
+        populateSelect(
+            'category-filter',
+            result.data.categories,
+            'All categories'
+        );
+
+        populateSelect(
+            'location-filter',
+            result.data.locations,
+            'All locations'
+        );
+
+        populateOrganizerSelect(
+            result.data.organizers
+        );
+
+        populateSelect(
+            'status-filter',
+            result.data.statuses,
+            'All statuses'
+        );
+
+    } catch (error) {
+        console.error(
+            'Error loading event filter options:',
+            error
+        );
+    }
+}
+
+function populateSelect(selectId, values, defaultText) {
+    const select = document.getElementById(selectId);
+
+    if (!select) {
+        return;
+    }
+
+    select.innerHTML = '';
+
+    const defaultOption = document.createElement('option');
+    defaultOption.value = '';
+    defaultOption.textContent = defaultText;
+
+    select.appendChild(defaultOption);
+
+    values.forEach((value) => {
+        const option = document.createElement('option');
+
+        option.value = value;
+        option.textContent = value;
+
+        select.appendChild(option);
+    });
+}
+
+
+function populateOrganizerSelect(organizers) {
+    const select = document.getElementById('organizer-filter');
+
+    if (!select) {
+        return;
+    }
+
+    select.innerHTML = '';
+
+    const defaultOption = document.createElement('option');
+    defaultOption.value = '';
+    defaultOption.textContent = 'All organizers';
+
+    select.appendChild(defaultOption);
+
+    organizers.forEach((organizer) => {
+        const option = document.createElement('option');
+
+        option.value = organizer.id;
+        option.textContent = organizer.name;
+
+        select.appendChild(option);
+    });
+}
+
+async function setupEventFilters() {
     const searchInput = document.querySelector('#event-search');
     const categoryFilter = document.querySelector('#category-filter');
     const dateFilter = document.querySelector('#date-filter');
@@ -49,8 +145,7 @@ function setupEventFilters() {
     }
 
     const applyFilters = () => {
-        const filtered = filterEventPageEvents();
-        renderEventPageEvents(filtered);
+        loadEventPageEvents();
     };
 
     [searchInput, categoryFilter, dateFilter, locationFilter, organizerFilter, statusFilter].forEach((input) => {
@@ -63,49 +158,8 @@ function setupEventFilters() {
         dateFilter.value = '';
         locationFilter.value = '';
         organizerFilter.value = '';
-        statusFilter.value = 'All';
+        statusFilter.value = '';
         applyFilters();
-    });
-}
-
-function filterEventPageEvents() {
-    const searchValue = document.querySelector('#event-search')?.value.trim().toLowerCase() || '';
-    const categoryValue = document.querySelector('#category-filter')?.value || '';
-    const dateValue = document.querySelector('#date-filter')?.value || '';
-    const locationValue = document.querySelector('#location-filter')?.value || '';
-    const organizerValue = document.querySelector('#organizer-filter')?.value || '';
-    const statusValue = document.querySelector('#status-filter')?.value || 'All';
-
-    return eventPageEvents.filter((event) => {
-        if (searchValue) {
-            const title = String(event.title || '').toLowerCase();
-            const description = String(event.description || '').toLowerCase();
-            if (!title.includes(searchValue) && !description.includes(searchValue)) {
-                return false;
-            }
-        }
-
-        if (categoryValue && event.category !== categoryValue) {
-            return false;
-        }
-
-        if (dateValue && event.event_date !== dateValue) {
-            return false;
-        }
-
-        if (locationValue && event.location !== locationValue) {
-            return false;
-        }
-
-        if (organizerValue && event.organizer_name !== organizerValue) {
-            return false;
-        }
-
-        if (statusValue !== 'All' && event.status !== statusValue) {
-            return false;
-        }
-
-        return true;
     });
 }
 
@@ -117,8 +171,41 @@ async function loadEventPageEvents() {
         return;
     }
 
+    const searchValue = document.querySelector('#event-search')?.value.trim() || '';
+    const categoryValue = document.querySelector('#category-filter')?.value || '';
+    const dateValue = document.querySelector('#date-filter')?.value || '';
+    const locationValue = document.querySelector('#location-filter')?.value || '';
+    const organizerValue = document.querySelector('#organizer-filter')?.value || '';
+    const statusValue = document.querySelector('#status-filter')?.value || '';
+
+    const params = new URLSearchParams();
+
+    if (searchValue) {
+        params.append('search', searchValue);
+    }
+
+    if (categoryValue) {
+        params.append('category', categoryValue);
+    }
+
+    if (dateValue) {
+        params.append('date', dateValue);
+    }
+
+    if (locationValue) {
+        params.append('location', locationValue);
+    }
+
+    if (organizerValue) {
+        params.append('organizer', organizerValue);
+    }
+
+    if (statusValue) {
+        params.append('status', statusValue);
+    }
+
     try {
-        const response = await fetch('/api/public/events');
+        const response = await fetch(`/api/events?${params.toString()}`);
         const result = await response.json();
 
         if (!response.ok || !result.success) {
@@ -126,11 +213,17 @@ async function loadEventPageEvents() {
         }
 
         eventPageEvents = result.data || [];
-        renderEventPageEvents(filterEventPageEvents());
+
+        renderEventPageEvents(eventPageEvents);
+
     } catch (error) {
         console.error('Error loading event page data:', error);
-        grid.innerHTML = '<p class="card-text">Unable to load events.</p>';
-        listBody.innerHTML = '<tr><td colspan="6">Unable to load events.</td></tr>';
+
+        grid.innerHTML =
+            '<p class="card-text">Unable to load events.</p>';
+
+        listBody.innerHTML =
+            '<tr><td colspan="6">Unable to load events.</td></tr>';
     }
 }
 
@@ -187,6 +280,7 @@ function setupEventsViewToggle() {
 }
 
 let studentEvents = [];
+let suggestedEvents = [];
 
 function setupEventsTypeSelector() {
     const select = document.getElementById('eventsTypeSelect');
@@ -227,30 +321,97 @@ async function loadStudentEvents() {
     }
 }
 
+async function loadSuggestedEvents() {
+    try {
+        const response = await fetch('/api/events/suggested', {
+            credentials: 'include'
+        });
+
+        const result = await response.json();
+
+        if (!response.ok || !result.success) {
+            throw new Error(
+                result.message || 'Failed to load suggested events'
+            );
+        }
+
+        suggestedEvents = result.data || [];
+
+    } catch (error) {
+        console.error(
+            'Error loading suggested events:',
+            error
+        );
+
+        suggestedEvents = [];
+    }
+}
+
 function renderStudentEvents(events, filter = 'registered') {
-    const registeredEventsGrid = document.getElementById('registeredEventsGrid');
-    const registeredEventsListBody = document.querySelector('#registeredEventsList tbody');
+    const registeredEventsGrid =
+        document.getElementById('registeredEventsGrid');
+
+    const registeredEventsListBody =
+        document.querySelector('#registeredEventsList tbody');
 
     if (!registeredEventsGrid || !registeredEventsListBody) {
         return;
     }
 
-    const filteredEvents = events.filter((event) => {
-        if (filter === 'registered') {
-            return event.registration_status === 'Registered';
-        }
-        if (filter === 'attended') {
-            return event.registration_status === 'Attended';
-        }
-        if (filter === 'cancelled') {
-            return event.registration_status === 'Cancelled';
-        }
-        return true;
-    });
+    let filteredEvents = [];
+
+    if (filter === 'suggested') {
+        filteredEvents = suggestedEvents;
+    } else {
+        filteredEvents = events.filter((event) => {
+
+            if (filter === 'registered') {
+                return event.registration_status === 'Registered';
+            }
+
+            if (filter === 'upcoming') {
+                const today =
+                    new Date().toISOString().split('T')[0];
+
+                return event.registration_status === 'Registered'
+                    && event.event_date >= today;
+            }
+
+            if (filter === 'attended') {
+                return event.registration_status === 'Attended';
+            }
+
+            if (filter === 'cancelled') {
+                return event.registration_status === 'Cancelled';
+            }
+
+            return true;
+        });
+    }
+
+    const titles = {
+        registered: 'Registered Events',
+        suggested: 'Suggested Events',
+        upcoming: 'Upcoming Registered Events',
+        attended: 'Attended Events',
+        cancelled: 'Cancelled Events'
+    };
+
+    const title =
+        document.getElementById('eventsSectionTitle');
+
+    if (title) {
+        title.textContent =
+            `${titles[filter]} (${filteredEvents.length})`;
+    }
 
     if (filteredEvents.length === 0) {
-        registeredEventsGrid.innerHTML = '<p class="card-text">No events to display.</p>';
-        registeredEventsListBody.innerHTML = '<tr><td colspan="6">No events to display.</td></tr>';
+        registeredEventsGrid.innerHTML =
+            '<p class="card-text">No events to display.</p>';
+
+        registeredEventsListBody.innerHTML =
+            '<tr><td colspan="6">No events to display.</td></tr>';
+
         return;
     }
 
@@ -258,8 +419,15 @@ function renderStudentEvents(events, filter = 'registered') {
     registeredEventsListBody.innerHTML = '';
 
     filteredEvents.forEach((event) => {
-        registeredEventsGrid.insertAdjacentHTML('beforeend', createStudentEventCardHtml(event));
-        registeredEventsListBody.insertAdjacentHTML('beforeend', createStudentEventTableRow(event));
+        registeredEventsGrid.insertAdjacentHTML(
+            'beforeend',
+            createStudentEventCardHtml(event)
+        );
+
+        registeredEventsListBody.insertAdjacentHTML(
+            'beforeend',
+            createStudentEventTableRow(event)
+        );
     });
 
     attachCancelButtons();
@@ -359,7 +527,7 @@ function attachCancelButtons() {
 
 function createStudentEventCardHtml(event) {
     const statusClass = getStatusBadgeClass(event.status);
-    const showCancelButton = event.registration_status !== 'Cancelled';
+    const showCancelButton = event.registration_status === 'Registered';
 
     return `
         <article class="card event-card">
@@ -391,7 +559,7 @@ function createStudentEventCardHtml(event) {
 
 function createStudentEventTableRow(event) {
     const statusClass = getStatusBadgeClass(event.status);
-    const showCancelButton = event.registration_status !== 'Cancelled';
+    const showCancelButton = event.registration_status === 'Registered';
 
     return `
         <tr>
