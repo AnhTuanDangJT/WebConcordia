@@ -84,7 +84,7 @@ async function createEvent(req, res) {
     }
 
     // Validate status
-    const validStatuses = ["Open", "Full", "Cancelled", "Disabled"];
+    const validStatuses = ["Open", "Full", "Cancelled", "Disabled", "Completed"];
     const eventStatus = status || "Open";
     if (!validStatuses.includes(eventStatus)) {
       return res.status(400).json({
@@ -260,7 +260,7 @@ async function editEvent(req, res) {
     }
 
     if (status) {
-      const validStatuses = ["Open", "Full", "Cancelled", "Disabled"];
+      const validStatuses = ["Open", "Full", "Cancelled", "Disabled", "Completed"];
       if (!validStatuses.includes(status)) {
         return res.status(400).json({
           success: false,
@@ -308,7 +308,7 @@ async function updateEventStatus(req, res) {
       });
     }
 
-    const validStatuses = ["Open", "Full", "Cancelled", "Disabled"];
+    const validStatuses = ["Open", "Full", "Cancelled", "Disabled", "Completed"];
     if (!validStatuses.includes(status)) {
       return res.status(400).json({
         success: false,
@@ -396,7 +396,12 @@ async function getEvents(req, res) {
 
     const eventsWithCalculations = events.map((event) => ({
       ...event,
-      remaining_seats: event.capacity - (event.registration_count || 0),
+      id: event.event_id,
+      date: event.event_date,
+      category_name: event.category,
+      remaining_seats:
+        event.remaining_seats ??
+        event.capacity - (event.registration_count || 0),
     }));
 
     res.json({

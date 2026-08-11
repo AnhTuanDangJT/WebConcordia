@@ -139,24 +139,7 @@
 
                         <p>Password must be at least 8 characters long.</p>
 
-                        <div class="form-group">
-                            <label class="form-label" for="submit-role">
-                                Role
-                            </label>
-
-                            <div class="role-slider">
-                                <span class="role student enabled">Student</span>
-                                <label class="switch">
-                                <input 
-                                    id="submit-role"
-                                    type="checkbox"
-                                    name="role"
-                                >
-                                    <span class="slider"></span>
-                                </label>
-                                <span class="role admin">Admin</span>
-                            </div>
-                        </div>
+                        <input type="hidden" name="role" value="student">
 
                         <button
                             id="submit-button"
@@ -207,7 +190,7 @@
 
                 <a href="/login">Login</a>
                 <a href="/register">Create Account</a>
-                <a href="/api/auth/profile">Profile</a>
+                <a href="/profile">Profile</a>
             </div>
         </div>
 

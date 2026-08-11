@@ -443,7 +443,7 @@ function attachViewDetailsButtons() {
                 return;
             }
 
-            window.location.href = `/api/events/event-details?id=${encodeURIComponent(eventId)}`;
+            window.location.href = `/event-details?id=${encodeURIComponent(eventId)}`;
         });
     });
 }

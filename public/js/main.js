@@ -54,7 +54,7 @@ function attachEventDetailsButtons() {
             }
 
             window.location.href =
-                `/api/events/event-details?id=${encodeURIComponent(eventId)}`;
+                `/event-details?id=${encodeURIComponent(eventId)}`;
         });
     });
 }
@@ -259,7 +259,7 @@ function createHeroEventHtml(event) {
         <button
             type="button"
             class="btn btn-primary view-details-btn"
-            data-event-id="1"
+            data-event-id="${escapeHtml(event.event_id)}"
         >
             View Event
         </button>
@@ -335,17 +335,20 @@ async function updateNavigationForAuth() {
         }
 
         const user = result.data;
+        const currentPath = window.location.pathname;
 
         if (user.role === "admin") {
             authNav.innerHTML = `
-                <li><a href="/views/admin-dashboard.html">Admin Dashboard</a></li>
-                <li><a href="/api/auth/profile">Profile</a></li>
+                <li><a href="/admin/dashboard"${currentPath === "/admin/dashboard" ? " class=\"active\"" : ""}>Admin Dashboard</a></li>
+                <li><a href="/profile"${currentPath === "/profile" ? " class=\"active\"" : ""}>Profile</a></li>
                 <li><button type="button" class="btn btn-secondary" id="logout-button">Logout</button></li>
             `;
         } else {
             authNav.innerHTML = `
-                <li><a href="/student/dashboard">Dashboard</a></li>
-                <li><a href="/api/auth/profile">Profile</a></li>
+                <li><a href="/student/dashboard"${currentPath === "/student/dashboard" ? " class=\"active\"" : ""}>Dashboard</a></li>
+                <li><a href="/my-registrations"${currentPath === "/my-registrations" ? " class=\"active\"" : ""}>My Registrations</a></li>
+                <li><a href="/upcoming-events"${currentPath === "/upcoming-events" ? " class=\"active\"" : ""}>Upcoming</a></li>
+                <li><a href="/profile"${currentPath === "/profile" ? " class=\"active\"" : ""}>Profile</a></li>
                 <li><button type="button" class="btn btn-secondary" id="logout-button">Logout</button></li>
             `;
         }

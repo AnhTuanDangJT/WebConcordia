@@ -67,22 +67,57 @@ async function register(req, res) {
         const registrationCount = await Registration.countForEvent(eventId);
 
         if (registrationCount >= event.capacity) {
+            if (event.status === "Open") {
+                await run(
+                    `UPDATE events SET status = 'Full' WHERE event_id = ? AND status = 'Open'`,
+                    [eventId]
+                );
+            }
             return res.status(400).json({
                 success: false,
                 message: "This event is full."
             });
         }
 
-        const registrationId = await Registration.registerStudent(
-            userId,
-            eventId
-        );
+        await run("BEGIN IMMEDIATE");
+        try {
+            const lockedCount = await Registration.countForEvent(eventId);
+            if (lockedCount >= event.capacity) {
+                await run(
+                    `UPDATE events SET status = 'Full' WHERE event_id = ?`,
+                    [eventId]
+                );
+                await run("COMMIT");
+                return res.status(400).json({
+                    success: false,
+                    message: "This event is full."
+                });
+            }
 
-        return res.status(201).json({
-            success: true,
-            message: "Successfully registered for the event.",
-            registrationId
-        });
+            const registrationId = await Registration.registerStudent(
+                userId,
+                eventId
+            );
+
+            const updatedCount = await Registration.countForEvent(eventId);
+            if (updatedCount >= event.capacity) {
+                await run(
+                    `UPDATE events SET status = 'Full' WHERE event_id = ?`,
+                    [eventId]
+                );
+            }
+
+            await run("COMMIT");
+
+            return res.status(201).json({
+                success: true,
+                message: "Successfully registered for the event.",
+                registrationId
+            });
+        } catch (txError) {
+            await run("ROLLBACK");
+            throw txError;
+        }
 
     } catch (error) {
         console.error("Registration error:", error);
@@ -209,6 +244,21 @@ async function cancel(req, res) {
             });
         }
 
+        const event = await get(
+            `SELECT event_id, capacity, status FROM events WHERE event_id = ?`,
+            [registration.event_id]
+        );
+
+        if (event && event.status === "Full") {
+            const activeCount = await Registration.countForEvent(event.event_id);
+            if (activeCount < event.capacity) {
+                await run(
+                    `UPDATE events SET status = 'Open' WHERE event_id = ? AND status = 'Full'`,
+                    [event.event_id]
+                );
+            }
+        }
+
         return res.json({
             success: true,
             message: "Registration cancelled successfully."
@@ -266,6 +316,21 @@ async function cancelRegistration(req, res) {
             "UPDATE registrations SET status = ? WHERE user_id = ? AND event_id = ?",
             ["Cancelled", userId, eventId]
         );
+
+        const event = await get(
+            `SELECT event_id, capacity, status FROM events WHERE event_id = ?`,
+            [eventId]
+        );
+
+        if (event && event.status === "Full") {
+            const activeCount = await Registration.countForEvent(event.event_id);
+            if (activeCount < event.capacity) {
+                await run(
+                    `UPDATE events SET status = 'Open' WHERE event_id = ? AND status = 'Full'`,
+                    [event.event_id]
+                );
+            }
+        }
 
         return res.status(200).json({
             success: true,

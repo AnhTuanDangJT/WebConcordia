@@ -181,7 +181,7 @@ async function getRegistrationsForEvent(eventId) {
        u.full_name AS student_name,
        u.email AS student_email
      FROM registrations r
-     JOIN users u ON r.user_id = u.user_id
+     LEFT JOIN users u ON r.user_id = u.user_id
      WHERE r.event_id = ? AND r.status != 'Cancelled'
      ORDER BY r.registration_date DESC`,
     [eventId]

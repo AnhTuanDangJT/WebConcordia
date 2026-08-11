@@ -69,7 +69,7 @@ function initAdminLogout() {
       } catch (err) {
         console.error("Logout error:", err);
       }
-      window.location.href = "/views/login.html";
+      window.location.href = "/login";
     });
   });
 }
@@ -87,6 +87,15 @@ function calcSeatsFilledPercent(event) {
   if (!event.capacity) return "0%";
   const count = event.registration_count || 0;
   return `${Math.round((count / event.capacity) * 100)}%`;
+}
+
+function getEventId(event) {
+  return event?.id ?? event?.event_id;
+}
+
+function isValidEventId(eventId) {
+  const parsed = Number(eventId);
+  return Number.isInteger(parsed) && parsed > 0;
 }
 
 async function loadDashboardStats() {
@@ -173,8 +182,8 @@ async function loadDashboardEvents() {
     events.forEach((event) => {
       const status = event.status || "Unknown";
       const fillPercent =
-        seatFillMap[event.id] !== undefined
-          ? `${seatFillMap[event.id]}%`
+        seatFillMap[getEventId(event)] !== undefined
+          ? `${seatFillMap[getEventId(event)]}%`
           : calcSeatsFilledPercent(event);
       const tr = document.createElement("tr");
       tr.innerHTML = `
@@ -184,7 +193,7 @@ async function loadDashboardEvents() {
         <td>${event.registration_count || 0} / ${event.capacity || "N/A"}</td>
         <td>${fillPercent}</td>
         <td><span class="status-badge ${statusClass(status)}">${status}</span></td>
-        <td><button type="button" onclick="editEvent(${event.id})">Edit</button></td>
+        <td><button type="button" onclick="editEvent(${getEventId(event)})">Edit</button></td>
       `;
       tbody.appendChild(tr);
     });
@@ -244,6 +253,7 @@ function renderManageEventsTable(filterText = "", statusFilter = "all") {
   events.forEach((event) => {
     const status = event.status || "Open";
     const remainingSeats = calcRemainingSeats(event);
+    const eventId = getEventId(event);
     const tr = document.createElement("tr");
     tr.innerHTML = `
       <td>${event.title || "Untitled Event"}</td>
@@ -256,15 +266,15 @@ function renderManageEventsTable(filterText = "", statusFilter = "all") {
       <td><span class="status-badge ${statusClass(status)}">${status}</span></td>
       <td>${event.organizer_name || "N/A"}</td>
       <td>
-        <button type="button" onclick="editEvent(${event.id})">Edit</button>
-        <button type="button" onclick="toggleStatus(${event.id}, '${status}')">
+        <button type="button" onclick="editEvent(${eventId})">Edit</button>
+        <button type="button" onclick="toggleStatus(${eventId}, '${status}')">
           ${status === "Cancelled" || status === "Disabled" ? "Enable" : "Cancel"}
         </button>
-        <button type="button" onclick="disableEvent(${event.id}, '${status}')">
+        <button type="button" onclick="disableEvent(${eventId}, '${status}')">
           ${status === "Disabled" ? "Already Disabled" : "Disable"}
         </button>
-        <button type="button" onclick="deleteEvent(${event.id})">Delete</button>
-        <button type="button" onclick="viewRegistrations(${event.id})">Roster</button>
+        <button type="button" onclick="deleteEvent(${eventId})">Delete</button>
+        <button type="button" onclick="viewRegistrations(${eventId})">Roster</button>
       </td>
     `;
     tbody.appendChild(tr);
@@ -402,6 +412,10 @@ function editEvent(eventId) {
 }
 
 function viewRegistrations(eventId) {
+  if (!isValidEventId(eventId)) {
+    alert("Unable to open roster for this event. Refresh Manage Events and try again.");
+    return;
+  }
   window.location.href = `/admin/view-registrations?id=${eventId}`;
 }
 
@@ -418,7 +432,7 @@ async function loadAttendanceEventsDropdown() {
     select.innerHTML = '<option value="">-- Choose an event --</option>';
     events.forEach((event) => {
       const option = document.createElement("option");
-      option.value = event.id;
+      option.value = getEventId(event);
       option.textContent = `${event.title} (${event.date})`;
       select.appendChild(option);
     });
@@ -449,16 +463,20 @@ async function loadAttendanceRegistrations(eventId) {
     }
 
     registrations.forEach((reg) => {
-      const attendance = reg.attendance_status || "Pending";
+      const registrationStatus = reg.registration_status || "Registered";
       const tr = document.createElement("tr");
       tr.innerHTML = `
         <td>${reg.student_name || "N/A"}</td>
         <td>${reg.student_email || "N/A"}</td>
         <td>${reg.created_at || "N/A"}</td>
-        <td><span class="status-badge ${statusClass(attendance)}">${attendance}</span></td>
+        <td><span class="status-badge ${statusClass(registrationStatus)}">${registrationStatus}</span></td>
         <td>
-          <button type="button" onclick="updateAttendance(${reg.id}, 'Attended', ${eventId})">Attended</button>
-          <button type="button" onclick="updateAttendance(${reg.id}, 'Missed', ${eventId})">Missed</button>
+          ${
+            registrationStatus === "Registered"
+              ? `<button type="button" onclick="updateAttendance(${reg.id}, 'Attended', ${eventId})">Attended</button>
+                 <button type="button" onclick="updateAttendance(${reg.id}, 'Missed', ${eventId})">Missed</button>`
+              : ""
+          }
         </td>
       `;
       tbody.appendChild(tr);
@@ -509,7 +527,11 @@ async function loadEventDetails(eventId) {
     if (!result.success) return null;
 
     const events = result.data || [];
-    return events.find((e) => e.id === parseInt(eventId, 10));
+    return events.find(
+      (e) =>
+        e.id === parseInt(eventId, 10) ||
+        e.event_id === parseInt(eventId, 10)
+    );
   } catch (err) {
     console.error("Error loading event details:", err);
     return null;
@@ -573,9 +595,20 @@ async function handleEditEvent(e) {
 
 async function loadViewRegistrationsPage() {
   const eventId = getQueryParam("id");
-  if (!eventId) return;
-
+  const tbody = document.getElementById("registrations-table-body");
   const titleElem = document.getElementById("registrations-page-title");
+
+  if (!tbody) return;
+
+  if (!isValidEventId(eventId)) {
+    if (titleElem) {
+      titleElem.textContent = "Event Registration Roster";
+    }
+    tbody.innerHTML =
+      '<tr><td colspan="5" style="text-align:center;">Invalid event. Return to Manage Events and open Roster again.</td></tr>';
+    return;
+  }
+
   const event = await loadEventDetails(eventId);
   if (titleElem) {
     titleElem.textContent = event
@@ -586,15 +619,17 @@ async function loadViewRegistrationsPage() {
   try {
     const res = await adminFetch(`/api/admin/events/${eventId}/registrations`);
     const result = await res.json();
-    if (!result.success) {
-      console.error("View registrations error:", result.message);
+
+    if (!res.ok || !result.success) {
+      tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">${result.message || "Unable to load registrations."}</td></tr>`;
       return;
     }
 
-    const registrations = result.data || [];
-    const tbody = document.getElementById("registrations-table-body");
-    if (!tbody) return;
+    if (titleElem && result.eventTitle) {
+      titleElem.textContent = `Registrations for: ${result.eventTitle}`;
+    }
 
+    const registrations = result.data || [];
     tbody.innerHTML = "";
 
     if (registrations.length === 0) {
@@ -604,21 +639,27 @@ async function loadViewRegistrationsPage() {
     }
 
     registrations.forEach((reg) => {
-      const attendance = reg.attendance_status || "Pending";
+      const registrationStatus = reg.registration_status || "Registered";
       const tr = document.createElement("tr");
       tr.innerHTML = `
         <td>${reg.student_name || "N/A"}</td>
         <td>${reg.student_email || "N/A"}</td>
         <td>${reg.created_at || "N/A"}</td>
-        <td><span class="status-badge ${statusClass(attendance)}">${attendance}</span></td>
+        <td><span class="status-badge ${statusClass(registrationStatus)}">${registrationStatus}</span></td>
         <td>
-          <button type="button" onclick="updateAttendance(${reg.id}, 'Attended', ${eventId})">Attended</button>
-          <button type="button" onclick="updateAttendance(${reg.id}, 'Missed', ${eventId})">Missed</button>
+          ${
+            registrationStatus === "Registered"
+              ? `<button type="button" onclick="updateAttendance(${reg.id}, 'Attended', ${eventId})">Attended</button>
+                 <button type="button" onclick="updateAttendance(${reg.id}, 'Missed', ${eventId})">Missed</button>`
+              : ""
+          }
         </td>
       `;
       tbody.appendChild(tr);
     });
   } catch (err) {
     console.error("Failed to load registrations:", err);
+    tbody.innerHTML =
+      '<tr><td colspan="5" style="text-align:center;">Unable to load registrations.</td></tr>';
   }
 }

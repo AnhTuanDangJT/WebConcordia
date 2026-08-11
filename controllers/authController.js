@@ -27,6 +27,12 @@ const anyValue = (field) => body(field).trim().notEmpty().withMessage("All field
 
 const roleValidation = () => body("role").isIn([userModel.studentRole, userModel.adminRole]).withMessage("Invalid role.");
 
+const registrationRoleValidation = () =>
+    body("role")
+        .optional()
+        .isIn([userModel.studentRole])
+        .withMessage("Public registration is limited to student accounts.");
+
 
 const passwordValidation = [ 
         body("password")
@@ -54,11 +60,12 @@ const registrationValidationRules = [
 
     emailValidation().custom(checkUniqueEmail),
 
-    roleValidation()
+    registrationRoleValidation()
 ].concat(passwordValidation);
 
 async function registerUser(req, res) {
-    const { full_name, email, password, role } = req.body;
+    const { full_name, email, password } = req.body;
+    const role = userModel.studentRole;
 
     const hash = await bcrypt.hash(password, 10);
     await userModel.createUser(full_name, email, hash, role);
@@ -69,18 +76,7 @@ async function registerUser(req, res) {
     {
         id = await userModel.getId(email);
         req.session.user_id = id;        
-
-        // currently will result in status 404 because these routes are not implemented yet.
-        switch(role)
-        {
-            case userModel.studentRole:
-                    redirect = "/student/dashboard";
-                break;
-            case userModel.adminRole:
-                    redirect = "/admin/dashboard";
-                break;
-        }
-        
+        redirect = "/student/dashboard";
     }
     catch(error)
     {

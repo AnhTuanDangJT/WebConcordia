@@ -22,6 +22,21 @@ function getEventsPage(req, res) {
   res.sendFile(path.join(__dirname, "..", "views", "events.html"));
 }
 
+function getEventDetailsPage(req, res) {
+  res.sendFile(path.join(__dirname, "..", "views", "event-details.html"));
+}
+
+function getMyRegistrationsPage(req, res) {
+  res.sendFile(path.join(__dirname, "..", "views", "my-registrations.html"));
+}
+
+function getUpcomingEventsPage(req, res) {
+  res.sendFile(path.join(__dirname, "..", "views", "upcoming-events.html"));
+}
+
+function getProfilePage(req, res) {
+  res.sendFile(path.join(__dirname, "..", "views", "profile.html"));
+}
 
 // controller for public auth page
 
@@ -255,6 +270,10 @@ module.exports = {
   getAboutPage,
   getContactPage,
   getEventsPage,
+  getEventDetailsPage,
+  getMyRegistrationsPage,
+  getUpcomingEventsPage,
+  getProfilePage,
   healthCheck,
   contactValidationRules,
   submitContactForm,

@@ -126,7 +126,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                         email: registerEmail.value.trim(),
                         password: registerPassword.value,
                         confirmpassword: registerConfirmPassword.value,
-                        role: roleSlider.checked ? "admin" : "student"
+                        role: "student"
                     });
 
                 const responseData = await response.json().catch(() => null);
@@ -210,7 +210,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                                 console.log("hhhh");
                                 profilePasswordMessage.textContent = "Password changed successfully";
                                 submitDetailsbutton.disabled = true;
-                                setTimeout(() => { window.location.href = "/api/auth/profile"; }, 1000);
+                                setTimeout(() => { window.location.href = "/profile"; }, 1000);
                             }
                         } 
                         catch (error) 
@@ -256,7 +256,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                             {
                                 profileDetailsMessage.textContent = "Details changed successfully";
                                 submitPasswordbutton.disabled = true;
-                                setTimeout(() => { window.location.href = "/api/auth/profile"; }, 1000);
+                                setTimeout(() => { window.location.href = "/profile"; }, 1000);
                             }
                         } 
                         catch (error) 

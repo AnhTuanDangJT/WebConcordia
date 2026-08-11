@@ -89,10 +89,32 @@ const getEventDetails = (req, res, next) => {
             });
         }
 
-        return res.status(200).json({
-            success: true,
-            data: row
-        });
+        const userId = req.session?.user_id;
+        if (!userId) {
+            row.is_registered = false;
+            return res.status(200).json({
+                success: true,
+                data: row
+            });
+        }
+
+        db.get(
+            `SELECT registration_id, status
+             FROM registrations
+             WHERE user_id = ? AND event_id = ? AND status != 'Cancelled'`,
+            [userId, eventId],
+            (regErr, registration) => {
+                if (regErr) {
+                    return next(regErr);
+                }
+
+                row.is_registered = Boolean(registration);
+                return res.status(200).json({
+                    success: true,
+                    data: row
+                });
+            }
+        );
     });
 };
 

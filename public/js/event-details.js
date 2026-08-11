@@ -4,17 +4,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function renderEventDetails() {
     try {
-        // Get the event ID from the URL
         const params = new URLSearchParams(window.location.search);
         const eventId = params.get('id');
 
-        // If there is no event ID, return to the events page
         if (!eventId) {
-            window.location.href = '/views/events.html';
+            window.location.href = '/events';
             return;
         }
 
-        // Get the event details from the API
         const response = await fetch(
             `/api/events/details/${encodeURIComponent(eventId)}`,
             {
@@ -30,7 +27,6 @@ async function renderEventDetails() {
 
         const event = result.data;
 
-        // Get HTML elements
         const title = document.getElementById('eventTitle');
         const category = document.getElementById('eventCategory');
         const description = document.getElementById('eventDescriptionShort');
@@ -42,8 +38,8 @@ async function renderEventDetails() {
         const registeredCount = document.getElementById('eventRegisteredCount');
         const remainingSeats = document.getElementById('eventRemainingSeats');
         const status = document.getElementById('eventStatus');
+        const registerButton = document.getElementById('register-event-btn');
 
-        // Display event data
         if (title) {
             title.textContent = event.title;
         }
@@ -92,10 +88,31 @@ async function renderEventDetails() {
                 `badge ${getStatusBadgeClass(event.status)}`;
         }
 
+        if (registerButton) {
+            registerButton.dataset.eventId = String(event.event_id);
+
+            const registrationAllowed =
+                event.status === 'Open' &&
+                Number(event.remaining_seats) > 0 &&
+                !event.is_registered;
+
+            if (event.is_registered) {
+                registerButton.textContent = 'Registered';
+                registerButton.disabled = true;
+            } else if (!registrationAllowed) {
+                registerButton.textContent =
+                    event.status === 'Full' ? 'Registration Full' : 'Registration Closed';
+                registerButton.disabled = true;
+            } else {
+                registerButton.textContent = 'Register for Event';
+                registerButton.disabled = false;
+            }
+        }
+
     } catch (error) {
         console.error('Error loading event details:', error);
         window.alert(error.message || 'Unable to load event details.');
-        window.location.href = '/views/events.html';
+        window.location.href = '/events';
     }
 }
 
