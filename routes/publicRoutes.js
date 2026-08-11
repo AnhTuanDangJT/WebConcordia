@@ -21,6 +21,11 @@ router.post(
 
 router.get("/api/health", publicController.healthCheck);
 router.get("/api/public/featured-events", publicController.getFeaturedEvents);
+<<<<<<< HEAD
 router.get("/api/public/events", publicController.getAllEvents);
+=======
+router.get("/api/public/events/:id", publicController.getEventDetails);
+router.get("/api/public/upcoming-events", publicController.getUpcomingEvents);
+>>>>>>> 42d6043 (Complete registration and upcoming events integration)
 
 module.exports = router;

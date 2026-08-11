@@ -1,11 +1,3 @@
-// 1. Get event ID from URL
-const params = new URLSearchParams(window.location.search);
-const eventId = params.get('id');
-
-if (!eventId) {
-    window.location.href = '/api/events/page';
-}
-
 document.addEventListener('DOMContentLoaded', () => {
     renderEventDetails();
 });
@@ -18,7 +10,7 @@ async function renderEventDetails() {
 
         // If there is no event ID, return to the events page
         if (!eventId) {
-            window.location.href = '/api/events/page';
+            window.location.href = '/views/events.html';
             return;
         }
 
@@ -103,7 +95,7 @@ async function renderEventDetails() {
     } catch (error) {
         console.error('Error loading event details:', error);
         window.alert(error.message || 'Unable to load event details.');
-        window.location.href = '/api/events/page';
+        window.location.href = '/views/events.html';
     }
 }
 

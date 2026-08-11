@@ -70,15 +70,15 @@
     <h2>My Participation</h2>
 
     <p>
-        Registered Events: 3
+        Registered Events: <span id="registered-count">0</span>
     </p>
 
     <p>
-        Attended Events: 1
+        Attended Events: <span id="attended-count">0</span>
     </p>
 
     <p>
-        Cancelled Events: 1
+        Cancelled Events: <span id="cancelled-count">0</span>
     </p>
 
     <div class="progress-container">
@@ -94,82 +94,10 @@
 </section>
 
             <section class="registration-list grid grid-2">
-
-
-                <article class="card registration-card">
-
-                    <h2 class="card-title">
-                        Hackathon 2026
-                    </h2>
-
-
-                    <p class="card-text">
-                        <strong>Date:</strong> March 20, 2026
-                    </p>
-
-
-                    <p class="card-text">
-                        <strong>Location:</strong> Engineering Building
-                    </p>
-
-
-                    <span class="badge badge-registered">
-                        Registered
-                    </span>
-
-
-                    <br><br>
-
-
-                    <button class="btn btn-danger">
-                        Cancel Registration
-                    </button>
-
-
-                </article>
-<article class="card registration-card">
-
-    <h2 class="card-title">
-        Career Networking Night
-    </h2>
-
-    <p class="card-text">
-        Date: April 15, 2026
-    </p>
-
-    <p class="card-text">
-        Location: Student Center
-    </p>
-
-    <span class="badge badge-attended">
-        Attended
-    </span>
-
-</article>
-
-
-
-<article class="card registration-card">
-
-    <h2 class="card-title">
-        Sports Activity Day
-    </h2>
-
-    <p class="card-text">
-        Date: May 5, 2026
-    </p>
-
-    <p class="card-text">
-        Location: Gymnasium
-    </p>
-
-    <span class="badge badge-missed">
-        Missed
-    </span>
-
-</article>
-
-            </section>
+    <div id="registration-list">
+        <p>Loading registrations...</p>
+    </div>
+</section>
 
 
         </div>
