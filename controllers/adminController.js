@@ -2,6 +2,8 @@
 // controllers/adminController.js
 
 const { run, get, all } = require("../database/database");
+const Event = require("../models/Event");
+const Registration = require("../models/Registration");
 
 // ==================== EVENT MANAGEMENT ====================
 
@@ -93,7 +95,7 @@ async function createEvent(req, res) {
 
     // Validate category exists
     const categoryExists = await get(
-      "SELECT id FROM categories WHERE name = ?",
+      "SELECT category_name FROM categories WHERE category_name = ?",
       [category]
     );
     if (!categoryExists) {
@@ -104,19 +106,25 @@ async function createEvent(req, res) {
     }
 
     // Get organizer ID from logged-in admin
-    const organizerId = req.user.id;
+    const organizerId = req.user.user_id;
 
-    // Insert into database
-    const result = await run(
-      `INSERT INTO events (title, description, category_id, date, start_time, end_time, location, capacity, organizer_id, status, created_at, updated_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'), datetime('now'))`,
-      [title, description, categoryExists.id, date, startTime, endTime, location, capacityNum, organizerId, eventStatus]
-    );
+    const eventId = await Event.createEvent({
+      title,
+      description,
+      category,
+      event_date: date,
+      start_time: startTime,
+      end_time: endTime,
+      location,
+      capacity: capacityNum,
+      organizer_id: organizerId,
+      status: eventStatus,
+    });
 
     res.status(201).json({
       success: true,
       message: "Event created successfully",
-      eventId: result.lastID,
+      eventId,
     });
   } catch (error) {
     console.error("Error creating event:", error);
@@ -146,8 +154,7 @@ async function editEvent(req, res) {
       status,
     } = req.body;
 
-    // Check event exists
-    const event = await get("SELECT * FROM events WHERE id = ?", [eventId]);
+    const event = await Event.getById(eventId);
     if (!event) {
       return res.status(404).json({
         success: false,
@@ -155,30 +162,35 @@ async function editEvent(req, res) {
       });
     }
 
-    // Check ownership (optional - only if supporting multiple organizers)
-    if (event.organizer_id !== req.user.id) {
+    if (event.organizer_id !== req.user.user_id) {
       return res.status(403).json({
         success: false,
         message: "You can only edit your own events",
       });
     }
 
-    // Validate capacity not lowered below current registrations
-    if (capacity) {
+    const updates = {};
+
+    if (capacity !== undefined) {
       const capacityNum = parseInt(capacity, 10);
-      const registrationCount = await get(
-        "SELECT COUNT(*) as count FROM registrations WHERE event_id = ? AND status = 'Active'",
-        [eventId]
-      );
-      if (capacityNum < registrationCount.count) {
+      if (isNaN(capacityNum) || capacityNum <= 0) {
         return res.status(400).json({
           success: false,
-          message: `Capacity cannot be lowered below current registrations (${registrationCount.count})`,
+          message: "Capacity must be a positive integer",
         });
       }
+
+      const registrationCount = await Event.countActiveRegistrations(eventId);
+      if (capacityNum < registrationCount) {
+        return res.status(400).json({
+          success: false,
+          message: `Capacity cannot be lowered below current registrations (${registrationCount})`,
+        });
+      }
+
+      updates.capacity = capacityNum;
     }
 
-    // Validate all fields if provided
     if (date) {
       const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
       if (!dateRegex.test(date)) {
@@ -196,6 +208,7 @@ async function editEvent(req, res) {
           message: "Event date cannot be in the past",
         });
       }
+      updates.event_date = date;
     }
 
     if (startTime && endTime) {
@@ -216,23 +229,21 @@ async function editEvent(req, res) {
           message: "End time must be after start time",
         });
       }
+      updates.start_time = startTime;
+      updates.end_time = endTime;
     }
-
-    // Build update query dynamically
-    const updates = [];
-    const params = [];
 
     if (title) {
-      updates.push("title = ?");
-      params.push(title);
+      updates.title = title;
     }
+
     if (description) {
-      updates.push("description = ?");
-      params.push(description);
+      updates.description = description;
     }
+
     if (category) {
       const categoryExists = await get(
-        "SELECT id FROM categories WHERE name = ?",
+        "SELECT category_name FROM categories WHERE category_name = ?",
         [category]
       );
       if (!categoryExists) {
@@ -241,29 +252,13 @@ async function editEvent(req, res) {
           message: "Invalid category",
         });
       }
-      updates.push("category_id = ?");
-      params.push(categoryExists.id);
+      updates.category = category;
     }
-    if (date) {
-      updates.push("date = ?");
-      params.push(date);
-    }
-    if (startTime) {
-      updates.push("start_time = ?");
-      params.push(startTime);
-    }
-    if (endTime) {
-      updates.push("end_time = ?");
-      params.push(endTime);
-    }
+
     if (location) {
-      updates.push("location = ?");
-      params.push(location);
+      updates.location = location;
     }
-    if (capacity) {
-      updates.push("capacity = ?");
-      params.push(parseInt(capacity, 10));
-    }
+
     if (status) {
       const validStatuses = ["Open", "Full", "Cancelled", "Disabled"];
       if (!validStatuses.includes(status)) {
@@ -272,24 +267,17 @@ async function editEvent(req, res) {
           message: `Status must be one of: ${validStatuses.join(", ")}`,
         });
       }
-      updates.push("status = ?");
-      params.push(status);
+      updates.status = status;
     }
 
-    updates.push("updated_at = datetime('now')");
-    params.push(eventId);
-
-    if (updates.length === 1) {
+    if (Object.keys(updates).length === 0) {
       return res.status(400).json({
         success: false,
         message: "No fields to update",
       });
     }
 
-    await run(
-      `UPDATE events SET ${updates.join(", ")} WHERE id = ?`,
-      params
-    );
+    await Event.updateEvent(eventId, updates);
 
     res.json({
       success: true,
@@ -328,7 +316,7 @@ async function updateEventStatus(req, res) {
       });
     }
 
-    const event = await get("SELECT * FROM events WHERE id = ?", [eventId]);
+    const event = await Event.getById(eventId);
     if (!event) {
       return res.status(404).json({
         success: false,
@@ -336,16 +324,12 @@ async function updateEventStatus(req, res) {
       });
     }
 
-    // Get affected registration count
     const registrationCount = await get(
-      "SELECT COUNT(*) as count FROM registrations WHERE event_id = ? AND status = 'Active'",
+      "SELECT COUNT(*) as count FROM registrations WHERE event_id = ? AND status != 'Cancelled'",
       [eventId]
     );
 
-    await run(
-      "UPDATE events SET status = ?, updated_at = datetime('now') WHERE id = ?",
-      [status, eventId]
-    );
+    await Event.updateEvent(eventId, { status });
 
     res.json({
       success: true,
@@ -369,7 +353,7 @@ async function deleteEvent(req, res) {
   try {
     const { eventId } = req.params;
 
-    const event = await get("SELECT * FROM events WHERE id = ?", [eventId]);
+    const event = await Event.getById(eventId);
     if (!event) {
       return res.status(404).json({
         success: false,
@@ -377,21 +361,17 @@ async function deleteEvent(req, res) {
       });
     }
 
-    // Check if registrations exist
-    const registrationCount = await get(
-      "SELECT COUNT(*) as count FROM registrations WHERE event_id = ?",
-      [eventId]
-    );
+    const registrationCount = await Event.countEventRegistrations(eventId);
 
-    if (registrationCount.count > 0) {
+    if (registrationCount > 0) {
       return res.status(400).json({
         success: false,
-        message: `Cannot delete event with active registrations. Use disable/cancel instead. (${registrationCount.count} registrations)`,
-        registrationCount: registrationCount.count,
+        message: `Cannot delete event with active registrations. Use disable/cancel instead. (${registrationCount} registrations)`,
+        registrationCount,
       });
     }
 
-    await run("DELETE FROM events WHERE id = ?", [eventId]);
+    await Event.deleteEvent(eventId);
 
     res.json({
       success: true,
@@ -412,23 +392,16 @@ async function deleteEvent(req, res) {
  */
 async function getEvents(req, res) {
   try {
-    const events = await all(
-      `SELECT e.*, c.name as category_name, COUNT(DISTINCT r.id) as registration_count
-       FROM events e
-       LEFT JOIN categories c ON e.category_id = c.id
-       LEFT JOIN registrations r ON e.id = r.event_id
-       GROUP BY e.id
-       ORDER BY e.date DESC`
-    );
+    const events = await Event.getAllWithRegistrationCount();
 
     const eventsWithCalculations = events.map((event) => ({
       ...event,
-      remaining_seats: event.capacity - event.registration_count,
+      remaining_seats: event.capacity - (event.registration_count || 0),
     }));
 
     res.json({
       success: true,
-      events: eventsWithCalculations,
+      data: eventsWithCalculations,
     });
   } catch (error) {
     console.error("Error fetching events:", error);
@@ -449,7 +422,7 @@ async function getRegistrations(req, res) {
   try {
     const { eventId } = req.params;
 
-    const event = await get("SELECT * FROM events WHERE id = ?", [eventId]);
+    const event = await Event.getById(eventId);
     if (!event) {
       return res.status(404).json({
         success: false,
@@ -457,20 +430,13 @@ async function getRegistrations(req, res) {
       });
     }
 
-    const registrations = await all(
-      `SELECT r.*, u.name as student_name, u.email as student_email
-       FROM registrations r
-       JOIN users u ON r.user_id = u.id
-       WHERE r.event_id = ?
-       ORDER BY r.created_at DESC`,
-      [eventId]
-    );
+    const registrations = await Event.getRegistrationsForEvent(eventId);
 
     res.json({
       success: true,
       eventTitle: event.title,
       totalRegistrations: registrations.length,
-      registrations,
+      data: registrations,
     });
   } catch (error) {
     console.error("Error fetching registrations:", error);
@@ -497,7 +463,7 @@ async function markAttendance(req, res) {
       });
     }
 
-    const validStatuses = ["Attended", "Missed", "Absent"];
+    const validStatuses = ["Attended", "Missed"];
     if (!validStatuses.includes(attendanceStatus)) {
       return res.status(400).json({
         success: false,
@@ -506,7 +472,7 @@ async function markAttendance(req, res) {
     }
 
     const registration = await get(
-      "SELECT * FROM registrations WHERE id = ?",
+      "SELECT * FROM registrations WHERE registration_id = ?",
       [registrationId]
     );
     if (!registration) {
@@ -516,9 +482,11 @@ async function markAttendance(req, res) {
       });
     }
 
+    const attended = attendanceStatus === "Attended" ? "Yes" : "No";
+
     await run(
-      "UPDATE registrations SET attendance_status = ?, updated_at = datetime('now') WHERE id = ?",
-      [attendanceStatus, registrationId]
+      "UPDATE registrations SET status = ?, attended = ? WHERE registration_id = ?",
+      [attendanceStatus, attended, registrationId]
     );
 
     res.json({
@@ -542,73 +510,53 @@ async function markAttendance(req, res) {
  */
 async function getDashboardStats(req, res) {
   try {
-    // Total events
-    const totalEvents = await get(
-      "SELECT COUNT(*) as count FROM events"
-    );
-
-    // Total registrations
+    const totalEvents = await get("SELECT COUNT(*) as count FROM events");
     const totalRegistrations = await get(
-      "SELECT COUNT(*) as count FROM registrations WHERE status = 'Active'"
+      "SELECT COUNT(*) as count FROM registrations WHERE status != 'Cancelled'"
     );
-
-    // Upcoming events
     const upcomingEvents = await get(
-      "SELECT COUNT(*) as count FROM events WHERE date >= date('now') AND status != 'Cancelled'"
+      "SELECT COUNT(*) as count FROM events WHERE event_date >= date('now') AND status != 'Cancelled'"
     );
-
-    // Full events
     const fullEvents = await get(
       "SELECT COUNT(*) as count FROM events WHERE status = 'Full'"
     );
-
-    // Cancelled events
     const cancelledEvents = await get(
       "SELECT COUNT(*) as count FROM events WHERE status = 'Cancelled'"
     );
-
-    // Most popular category
     const mostPopularCategory = await get(
-      `SELECT c.name, COUNT(e.id) as event_count
-       FROM categories c
-       LEFT JOIN events e ON c.id = e.category_id
-       GROUP BY c.id
+      `SELECT category, COUNT(*) as event_count
+       FROM events
+       GROUP BY category
        ORDER BY event_count DESC
        LIMIT 1`
     );
-
-    // Attended students
     const attendedStudents = await get(
-      "SELECT COUNT(*) as count FROM registrations WHERE attendance_status = 'Attended'"
+      "SELECT COUNT(*) as count FROM registrations WHERE status = 'Attended'"
     );
-
-    // Attendance rate
     const totalWithAttendance = await get(
-      "SELECT COUNT(*) as count FROM registrations WHERE attendance_status IS NOT NULL"
+      "SELECT COUNT(*) as count FROM registrations WHERE status IN ('Attended', 'Missed')"
     );
     const attendanceRate = totalWithAttendance.count > 0
       ? ((attendedStudents.count / totalWithAttendance.count) * 100).toFixed(2)
       : "0.00";
 
-    // Registration totals by category
     const registrationsByCategory = await all(
-      `SELECT c.name, COUNT(r.id) as registration_count
-       FROM categories c
-       LEFT JOIN events e ON c.id = e.category_id
-       LEFT JOIN registrations r ON e.id = r.event_id
-       GROUP BY c.id
+      `SELECT e.category, COUNT(r.registration_id) as registration_count
+       FROM events e
+       LEFT JOIN registrations r ON e.event_id = r.event_id
+       GROUP BY e.category
        ORDER BY registration_count DESC`
     );
 
     res.json({
       success: true,
-      statistics: {
+      data: {
         totalEvents: totalEvents.count,
         totalRegistrations: totalRegistrations.count,
         upcomingEvents: upcomingEvents.count,
         fullEvents: fullEvents.count,
         cancelledEvents: cancelledEvents.count,
-        mostPopularCategory: mostPopularCategory?.name || "N/A",
+        mostPopularCategory: mostPopularCategory?.category || "N/A",
         attendedStudents: attendedStudents.count,
         attendanceRate: `${attendanceRate}%`,
         registrationsByCategory,

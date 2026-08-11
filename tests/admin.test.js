@@ -1,8 +1,19 @@
 //By Tiago
 const request = require("supertest");
 const express = require("express");
-const session = require("express-session");
 const adminRoutes = require("../routes/adminRoutes");
+
+jest.mock("../models/User", () => ({
+  findById: jest.fn(async (user_id) => {
+    if (user_id === 1) {
+      return { user_id: 1, full_name: "Admin User", email: "admin@test.com", role: "admin" };
+    }
+    if (user_id === 2) {
+      return { user_id: 2, full_name: "Student User", email: "student@test.com", role: "student" };
+    }
+    throw new Error("User not found");
+  }),
+}));
 
 // Create an isolated Express app for testing
 const app = express();
@@ -11,9 +22,9 @@ app.use(express.json());
 // Mock session setup for tests
 app.use((req, res, next) => {
   if (req.headers["x-test-role"] === "admin") {
-    req.session = { user: { id: 1, role: "admin" } };
+    req.session = { user_id: 1 };
   } else if (req.headers["x-test-role"] === "student") {
-    req.session = { user: { id: 2, role: "student" } };
+    req.session = { user_id: 2 };
   } else {
     req.session = {};
   }
@@ -55,10 +66,11 @@ describe("Admin Route Protection & Validation Tests", () => {
       .set("x-test-role", "admin")
       .send({
         title: "Test Event",
-        category: "Workshop",
+        description: "A test event",
+        category: "Academic workshops",
         date: "2026-12-01",
-        start_time: "10:00",
-        end_time: "12:00",
+        startTime: "10:00",
+        endTime: "12:00",
         location: "Hall H",
         capacity: -5
       });
