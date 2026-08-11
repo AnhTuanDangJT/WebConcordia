@@ -48,7 +48,7 @@
                     </li>
 
                     <li>
-                        <a href="/views/events.html">Events</a>
+                        <a href="/api/events/page">Events</a>
                     </li>
 
                     <li>
@@ -60,7 +60,7 @@
                     </li>
 
                     <li>
-                        <a href="/views/login.html"  class="active">Dashboard</a>
+                        <a href="/student/dashboard"  class="active">Dashboard</a>
                     </li>
                 </ul>
             </nav>
@@ -128,11 +128,15 @@
                         <label for="eventsTypeSelect" class="visually-hidden">Event type:</label>
                         <select id="eventsTypeSelect" class="events-select" aria-label="Event type">
                             <option value="registered" selected>Registered Events</option>
+                            <option value="suggested">Suggested Events</option>
+                            <option value="upcoming">Upcoming Registered Events</option>
                             <option value="attended">Attended Events</option>
                             <option value="cancelled">Cancelled Events</option>
                         </select>
                     </div>
                 </div>
+
+                <h2 id="eventsSectionTitle"></h2>
 
                 <!-- Scroll -->
                 <div class="scroll-container">
@@ -158,7 +162,7 @@
                 <!-- View all events button -->
                 <div class="section-action">
                     <a
-                        href="/views/events.html"
+                        href="/api/events/page"
                         class="btn btn-secondary"
                     >
                         View All Events
@@ -185,7 +189,7 @@
                 <h3>Quick Links</h3>
 
                 <a href="/">Home</a>
-                <a href="/views/events.html">Events</a>
+                <a href="/api/events/page">Events</a>
                 <a href="/about">About</a>
                 <a href="/contact">Contact</a>
             </div>

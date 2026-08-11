@@ -1,0 +1,145 @@
+<!--edit-event.html: When an admin clicks the "Edit Event" button on an event, it opens this page to allow them to modify the event details (Task 3). By Tiago-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Event - Admin</title>
+    <link rel="icon" href="/images/favicon3.png" type="image/png" sizes="32x32">
+    <link rel="shortcut icon" href="/images/favicon3.png" type="image/png">
+    <link rel="stylesheet" href="/css/global.css">
+    <link rel="stylesheet" href="/css/public-pages.css">
+    <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="container navbar">
+            <a href="/" class="site-logo">Campus<span>Connect</span></a>
+            <button class="nav-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false" aria-controls="primary-navigation">☰</button>
+            <nav id="primary-navigation" class="primary-navigation" aria-label="Main navigation">
+                <ul class="nav-links">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/views/events.html">Events</a></li>
+                    <li><a href="/about">About</a></li>
+                    <li><a href="/contact">Contact</a></li>
+                    <li><a href="/admin/dashboard">Dashboard</a></li>
+                    <li><a href="/admin/create-event">Create Event</a></li>
+                    <li><a href="/admin/manage-events">Manage Events</a></li>
+                    <li><a href="/admin/attendance-management">Attendance</a></li>
+                    <li><a href="#" class="btn btn-primary admin-logout">Logout</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="admin-container">
+        <div class="page-header">
+            <h1 id="edit-event-title">Edit Event</h1>
+            <p>Update the event details and save changes for students to see.</p>
+        </div>
+
+        <section class="form-card">
+            <form id="edit-event-form" class="event-form">
+                <div class="form-group">
+                    <label for="title">Event Title</label>
+                    <input type="text" id="title" name="title" placeholder="e.g. Annual Hackathon" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="category">Category</label>
+                    <select id="category" name="category" required>
+                        <option value="">Select a category</option>
+                        <option value="Academic workshops">Academic workshops</option>
+                        <option value="Career events">Career events</option>
+                        <option value="Club activities">Club activities</option>
+                        <option value="Sports events">Sports events</option>
+                        <option value="Cultural events">Cultural events</option>
+                        <option value="Volunteering events">Volunteering events</option>
+                        <option value="Social events">Social events</option>
+                        <option value="Guest lectures">Guest lectures</option>
+                        <option value="Networking events">Networking events</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="date">Date</label>
+                        <input type="date" id="date" name="date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="startTime">Start Time</label>
+                        <input type="time" id="startTime" name="startTime" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="endTime">End Time</label>
+                        <input type="time" id="endTime" name="endTime" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="location">Location</label>
+                    <input type="text" id="location" name="location" placeholder="e.g. Hall Building, Room 123" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="capacity">Maximum Capacity</label>
+                        <input type="number" id="capacity" name="capacity" min="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="status">Event Status</label>
+                        <select id="status" name="status" required>
+                            <option value="Open">Open</option>
+                            <option value="Full">Full</option>
+                            <option value="Disabled">Disabled</option>
+                            <option value="Cancelled">Cancelled</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Event Description</label>
+                    <textarea id="description" name="description" rows="5" placeholder="Describe the event goals and details..." required></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">Save Changes</button>
+                    <a href="/admin/manage-events" class="btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-content">
+            <div class="footer-brand">
+                <h2>Campus<span>Connect</span></h2>
+                <p>Helping students discover, register for, and manage campus events in one central location.</p>
+            </div>
+            <div class="footer-column">
+                <h3>Quick Links</h3>
+                <a href="/">Home</a>
+                <a href="/views/events.html">Events</a>
+                <a href="/about">About</a>
+                <a href="/contact">Contact</a>
+            </div>
+            <div class="footer-column">
+                <h3>Account</h3>
+                <a href="/views/login.html">Login</a>
+                <a href="/views/register.html">Create Account</a>
+                <a href="/views/profile.html">Profile</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                <p>&copy; 2026 CampusConnect. SOEN 287 Project.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/js/main.js"></script>
+    <script src="/js/admin.js"></script>
+</body>
+</html>

@@ -1,5 +1,5 @@
 <!-- ========================================
-    CREATE EVENT PAGE
+    CREATE EVENT PAGE by Tiago
     A page for admins to create new campus events. Contains a form with 
     fields for title, category, date/time, location, capacity, 
     organizer, status, and description.
@@ -61,19 +61,23 @@
                     </li>
 
                     <li>
-                        <a href="/views/admin-dashboard.html">Dashboard</a>
+                        <a href="/admin/dashboard">Dashboard</a>
                     </li>
 
                     <li>
-                        <a href="/views/create-event.html" class="active">Create Event</a>
+                        <a href="/admin/create-event" class="active">Create Event</a>
                     </li>
 
                     <li>
-                        <a href="/views/manage-events.html">Manage Events</a>
+                        <a href="/admin/manage-events">Manage Events</a>
                     </li>
 
                     <li>
-                        <a href="/views/login.html" class="btn btn-primary">Logout</a>
+                        <a href="/admin/attendance-management">Attendance</a>
+                    </li>
+
+                    <li>
+                        <a href="#" class="btn btn-primary admin-logout">Logout</a>
                     </li>
                 </ul>
             </nav>
@@ -88,47 +92,49 @@
         </div>
 
         <section class="form-card">
-            <!-- The form currently posts to “#”, which means it will not send data to a server until JavaScript or a backend URL is added. -->
-            <form action="#" method="POST" class="event-form">
+            <!-- The form is handled by JavaScript in /js/admin.js and posts to the backend API. -->
+            <form id="create-event-form" action="javascript:void(0)" method="POST" onsubmit="return false;" class="event-form">
                 
                 <div class="form-group">
-                    <label for="event-name">Event Title</label>
-                    <input type="text" id="event-name" name="event-name" placeholder="e.g. Annual Hackathon" required>
+                    <label for="title">Event Title</label>
+                    <input type="text" id="title" name="title" placeholder="e.g. Annual Hackathon" required>
                 </div>
 
                 <div class="form-group">
                     <label for="category">Category</label>
                     <select id="category" name="category" required>
                         <option value="">Select a category</option>
-                        <option value="academic">Academic / Workshop</option>
-                        <option value="technology">Technology</option>
-                        <option value="social">Social & Cultural</option>
-                        <option value="sports">Sports & Wellness</option>
+                        <option value="Academic workshops">Academic workshops</option>
+                        <option value="Career events">Career events</option>
+                        <option value="Club activities">Club activities</option>
+                        <option value="Sports events">Sports events</option>
+                        <option value="Cultural events">Cultural events</option>
+                        <option value="Volunteering events">Volunteering events</option>
+                        <option value="Social events">Social events</option>
+                        <option value="Guest lectures">Guest lectures</option>
+                        <option value="Networking events">Networking events</option>
+                        <option value="Other">Other</option>
                     </select>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="event-date">Date</label>
-                        <input type="date" id="event-date" name="event-date" required>
+                        <label for="date">Date</label>
+                        <input type="date" id="date" name="date" required>
                     </div>
                     <div class="form-group">
-                        <label for="start-time">Start Time</label>
-                        <input type="time" id="start-time" name="start-time" required>
+                        <label for="startTime">Start Time</label>
+                        <input type="time" id="startTime" name="startTime" required>
                     </div>
                     <div class="form-group">
-                        <label for="end-time">End Time</label>
-                        <input type="time" id="end-time" name="end-time" required>
+                        <label for="endTime">End Time</label>
+                        <input type="time" id="endTime" name="endTime" required>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="location">Campus Location</label>
-                    <select id="location" name="location">
-                        <option value="sgw">SGW Campus (Downtown)</option>
-                        <option value="loyola">Loyola Campus</option>
-                        <option value="online">Online / Virtual</option>
-                    </select>
+                    <label for="location">Location</label>
+                    <input type="text" id="location" name="location" placeholder="e.g. Hall Building, Room 123" required>
                 </div>
 
                 <div class="form-row">
@@ -137,22 +143,21 @@
                         <input type="number" id="capacity" name="capacity" min="1" placeholder="e.g. 50" required>
                     </div>
                     <div class="form-group">
-                        <label for="organizer">Organizer</label>
-                        <input type="text" id="organizer" name="organizer" placeholder="e.g. Computer Science Club" required>
-                    </div>
-                    <div class="form-group">
                         <label for="status">Event Status</label>
-                        <select id="status" name="status">
-                            <option value="active">Active / Open</option>
-                            <option value="full">Full</option>
-                            <option value="cancelled">Cancelled</option>
+                        <select id="status" name="status" required>
+                            <option value="Open">Open</option>
+                            <option value="Full">Full</option>
+                            <option value="Disabled">Disabled</option>
+                            <option value="Cancelled">Cancelled</option>
                         </select>
                     </div>
                 </div>
 
+                <p class="form-note">Organizer is automatically set to your admin account.</p>
+
                 <div class="form-group">
                     <label for="description">Event Description</label>
-                    <textarea id="description" name="description" rows="5" placeholder="Describe the event goals and details..."></textarea>
+                    <textarea id="description" name="description" rows="5" placeholder="Describe the event goals and details..." required></textarea>
                 </div>
 
                 <div class="form-actions">
@@ -221,5 +226,6 @@
     -->
 
     <script src="/js/main.js"></script>
+    <script src="/js/admin.js"></script>
 </body>
 </html>

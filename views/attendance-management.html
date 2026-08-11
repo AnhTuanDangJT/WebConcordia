@@ -1,0 +1,92 @@
+<!-- Attendance Management by Tiago
+ 4th Tab missing from D1 -->
+ 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Management | CampusConnect</title>
+    <link rel="icon" href="/images/favicon3.png" type="image/png" sizes="32x32">
+    <link rel="shortcut icon" href="/images/favicon3.png" type="image/png">
+    <link rel="stylesheet" href="/css/global.css">
+    <link rel="stylesheet" href="/css/public-pages.css">
+    <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+
+    <header class="site-header">
+        <div class="container navbar">
+            <a href="/" class="site-logo">
+                Campus<span>Connect</span>
+            </a>
+
+            <button
+                class="nav-toggle"
+                type="button"
+                aria-label="Open navigation menu"
+                aria-expanded="false"
+                aria-controls="primary-navigation"
+            >
+                ☰
+            </button>
+
+            <nav
+                id="primary-navigation"
+                class="primary-navigation"
+                aria-label="Main navigation"
+            >
+                <ul class="nav-links">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/views/events.html">Events</a></li>
+                    <li><a href="/about">About</a></li>
+                    <li><a href="/contact">Contact</a></li>
+                    <li><a href="/admin/dashboard">Dashboard</a></li>
+                    <li><a href="/admin/create-event">Create Event</a></li>
+                    <li><a href="/admin/manage-events">Manage Events</a></li>
+                    <li><a href="/admin/attendance-management" class="active">Attendance</a></li>
+                    <li><a href="#" class="btn btn-primary admin-logout">Logout</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="admin-container">
+        <h1>Attendance Management</h1>
+        <p>Track student participation for your active events.</p>
+
+        <!-- Filter/Select Event -->
+        <div class="attendance-controls">
+            <label for="attendance-event-select">Select Event:</label>
+            <select id="attendance-event-select">
+                <option value="">-- Choose an event --</option>
+                <!-- JS will populate these options from GET /api/admin/events -->
+            </select>
+        </div>
+
+        <!-- Attendance Table -->
+        <div class="table-wrapper">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Student Name</th>
+                        <th>Email</th>
+                        <th>Registration Date</th>
+                        <th>Current Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="attendance-table-body">
+                    <tr>
+                        <td colspan="5" style="text-align: center;">Select an event to load attendance records.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <!-- Connect the JS logic -->
+    <script src="/js/main.js"></script>
+    <script src="/js/admin.js"></script>
+</body>
+</html>
