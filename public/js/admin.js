@@ -41,10 +41,14 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
+function adminFetch(url, options = {}) {
+  return fetch(url, { credentials: "include", ...options });
+}
+
 // Fetch Real-time Dashboard Analytics
 async function loadDashboardStats() {
   try {
-    const res = await fetch("/api/admin/dashboard");
+    const res = await adminFetch("/api/admin/dashboard");
     const result = await res.json();
     if (!result.success) {
       console.error("Dashboard stats error:", result.message);
@@ -89,7 +93,7 @@ async function loadDashboardStats() {
 
 async function loadDashboardEvents() {
   try {
-    const res = await fetch("/api/admin/events");
+    const res = await adminFetch("/api/admin/events");
     const result = await res.json();
     if (!result.success) {
       console.error("Dashboard events error:", result.message);
@@ -130,7 +134,7 @@ async function loadDashboardEvents() {
 // Fetch and Render Events Table
 async function loadManageEventsTable() {
   try {
-    const res = await fetch("/api/admin/events");
+    const res = await adminFetch("/api/admin/events");
     const result = await res.json();
     if (!result.success) {
       console.error("Manage events error:", result.message);
@@ -193,7 +197,7 @@ async function handleCreateEvent(e) {
   }
 
   try {
-    const res = await fetch("/api/admin/events", {
+    const res = await adminFetch("/api/admin/events", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)
@@ -218,7 +222,7 @@ async function toggleStatus(eventId, currentStatus) {
   if (!confirm(`Change event status to ${newStatus}?`)) return;
 
   try {
-    const res = await fetch(`/api/admin/events/${eventId}/status`, {
+    const res = await adminFetch(`/api/admin/events/${eventId}/status`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ status: newStatus })
@@ -242,7 +246,7 @@ async function deleteEvent(eventId) {
   if (!confirm("Are you sure you want to delete this event?")) return;
 
   try {
-    const res = await fetch(`/api/admin/events/${eventId}`, { method: "DELETE" });
+    const res = await adminFetch(`/api/admin/events/${eventId}`, { method: "DELETE" });
     const result = await res.json();
     
     if (result.success) {
@@ -268,7 +272,7 @@ function viewRegistrations(eventId) {
 // Load Events into Attendance Dropdown
 async function loadAttendanceEventsDropdown() {
   try {
-    const res = await fetch("/api/admin/events");
+    const res = await adminFetch("/api/admin/events");
     const result = await res.json();
     if (!result.success) return;
 
@@ -292,7 +296,7 @@ async function loadAttendanceEventsDropdown() {
 // Fetch Registrations for Selected Event
 async function loadAttendanceRegistrations(eventId) {
   try {
-    const res = await fetch(`/api/admin/events/${eventId}/registrations`);
+    const res = await adminFetch(`/api/admin/events/${eventId}/registrations`);
     const result = await res.json();
     if (!result.success) {
       console.error("Registrations error:", result.message);
@@ -334,7 +338,7 @@ async function loadAttendanceRegistrations(eventId) {
 // Submit Attendance Status Change
 async function updateAttendance(registrationId, status, eventId) {
   try {
-    const res = await fetch(`/api/admin/registrations/${registrationId}/attendance`, {
+    const res = await adminFetch(`/api/admin/registrations/${registrationId}/attendance`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ attendanceStatus: status })
@@ -365,7 +369,7 @@ function getQueryParam(name) {
 async function loadEventDetails(eventId) {
   if (!eventId) return null;
   try {
-    const res = await fetch(`/api/admin/events`);
+    const res = await adminFetch(`/api/admin/events`);
     const result = await res.json();
     if (!result.success) return null;
     
@@ -415,7 +419,7 @@ async function handleEditEvent(e) {
   const payload = Object.fromEntries(formData.entries());
 
   try {
-    const res = await fetch(`/api/admin/events/${eventId}`, {
+    const res = await adminFetch(`/api/admin/events/${eventId}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
@@ -445,7 +449,7 @@ async function loadViewRegistrationsPage() {
   }
 
   try {
-    const res = await fetch(`/api/admin/events/${eventId}/registrations`);
+    const res = await adminFetch(`/api/admin/events/${eventId}/registrations`);
     const result = await res.json();
     if (!result.success) {
       console.error("View registrations error:", result.message);

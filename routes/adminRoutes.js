@@ -1,31 +1,33 @@
 const express = require("express");
+const path = require("path");
 const adminController = require("../controllers/adminController");
+const { validSession } = require("../middleware/authMiddleware");
+const { checkRole } = require("../middleware/roleMiddleware");
 
 const router = express.Router();
 
-// Middleware to check if user is authenticated and has Admin role
-const authMiddleware = (req, res, next) => {
-  if (!req.session.user) {
-    return res.status(401).json({
-      success: false,
-      message: "Unauthorized: Please log in",
-    });
-  }
+// Apply session and role middleware to all admin routes
+router.use(validSession, checkRole("admin"));
 
-  if (req.session.user.role !== "Admin") {
-    return res.status(403).json({
-      success: false,
-      message: "Forbidden: Admin access required",
-    });
-  }
-
-  // Attach user to request object for use in controllers
-  req.user = req.session.user;
-  next();
-};
-
-// Apply auth middleware to all admin routes
-router.use(authMiddleware);
+// Protected admin HTML pages
+router.get("/admin/dashboard", (req, res) => {
+  res.sendFile(path.join(__dirname, "..", "views", "admin-dashboard.html"));
+});
+router.get("/admin/create-event", (req, res) => {
+  res.sendFile(path.join(__dirname, "..", "views", "create-event.html"));
+});
+router.get("/admin/manage-events", (req, res) => {
+  res.sendFile(path.join(__dirname, "..", "views", "manage-events.html"));
+});
+router.get("/admin/edit-event", (req, res) => {
+  res.sendFile(path.join(__dirname, "..", "views", "edit-event.html"));
+});
+router.get("/admin/view-registrations", (req, res) => {
+  res.sendFile(path.join(__dirname, "..", "views", "view-registrations.html"));
+});
+router.get("/admin/attendance-management", (req, res) => {
+  res.sendFile(path.join(__dirname, "..", "views", "attendance-management.html"));
+});
 
 // ==================== EVENT ENDPOINTS ====================
 
