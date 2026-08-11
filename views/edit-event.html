@@ -23,11 +23,11 @@
                     <li><a href="/views/events.html">Events</a></li>
                     <li><a href="/about">About</a></li>
                     <li><a href="/contact">Contact</a></li>
-                    <li><a href="/views/admin-dashboard.html">Dashboard</a></li>
-                    <li><a href="/views/create-event.html">Create Event</a></li>
-                    <li><a href="/views/manage-events.html">Manage Events</a></li>
-                    <li><a href="/views/attendance-management.html">Attendance</a></li>
-                    <li><a href="/views/login.html" class="btn btn-primary">Logout</a></li>
+                    <li><a href="/admin/dashboard">Dashboard</a></li>
+                    <li><a href="/admin/create-event">Create Event</a></li>
+                    <li><a href="/admin/manage-events">Manage Events</a></li>
+                    <li><a href="/admin/attendance-management">Attendance</a></li>
+                    <li><a href="#" class="btn btn-primary admin-logout">Logout</a></li>
                 </ul>
             </nav>
         </div>
@@ -50,11 +50,15 @@
                     <label for="category">Category</label>
                     <select id="category" name="category" required>
                         <option value="">Select a category</option>
-                        <option value="Academic">Academic</option>
-                        <option value="Technology">Technology</option>
-                        <option value="Social">Social</option>
-                        <option value="Workshop">Workshop</option>
-                        <option value="Sports">Sports</option>
+                        <option value="Academic workshops">Academic workshops</option>
+                        <option value="Career events">Career events</option>
+                        <option value="Club activities">Club activities</option>
+                        <option value="Sports events">Sports events</option>
+                        <option value="Cultural events">Cultural events</option>
+                        <option value="Volunteering events">Volunteering events</option>
+                        <option value="Social events">Social events</option>
+                        <option value="Guest lectures">Guest lectures</option>
+                        <option value="Networking events">Networking events</option>
                         <option value="Other">Other</option>
                     </select>
                 </div>
@@ -75,13 +79,8 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="location">Campus Location</label>
-                    <select id="location" name="location" required>
-                        <option value="">Select a location</option>
-                        <option value="SGW">SGW Campus (Downtown)</option>
-                        <option value="Loyola">Loyola Campus</option>
-                        <option value="Online">Online / Virtual</option>
-                    </select>
+                    <label for="location">Location</label>
+                    <input type="text" id="location" name="location" placeholder="e.g. Hall Building, Room 123" required>
                 </div>
 
                 <div class="form-row">
@@ -92,7 +91,8 @@
                     <div class="form-group">
                         <label for="status">Event Status</label>
                         <select id="status" name="status" required>
-                            <option value="Active">Active / Open</option>
+                            <option value="Open">Open</option>
+                            <option value="Full">Full</option>
                             <option value="Disabled">Disabled</option>
                             <option value="Cancelled">Cancelled</option>
                         </select>
@@ -106,7 +106,7 @@
 
                 <div class="form-actions">
                     <button type="submit" class="btn-primary">Save Changes</button>
-                    <a href="/views/manage-events.html" class="btn-secondary">Cancel</a>
+                    <a href="/admin/manage-events" class="btn-secondary">Cancel</a>
                 </div>
             </form>
         </section>

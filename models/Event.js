@@ -99,9 +99,11 @@ async function getAllWithRegistrationCount() {
        e.capacity,
        e.status,
        e.organizer_id,
+       u.full_name AS organizer_name,
        COUNT(r.registration_id) AS registration_count
      FROM events e
-     LEFT JOIN registrations r ON e.event_id = r.event_id
+     LEFT JOIN users u ON e.organizer_id = u.user_id
+     LEFT JOIN registrations r ON e.event_id = r.event_id AND r.status != 'Cancelled'
      GROUP BY e.event_id
      ORDER BY e.event_date DESC`
   );
@@ -114,13 +116,18 @@ async function getRegistrationsForEvent(eventId) {
        r.user_id,
        r.event_id,
        r.registration_date AS created_at,
-       r.status AS attendance_status,
+       r.status AS registration_status,
        r.attended,
+       CASE
+         WHEN r.status IN ('Attended', 'Missed') THEN r.status
+         WHEN r.attended = 'Yes' THEN 'Attended'
+         ELSE 'Pending'
+       END AS attendance_status,
        u.full_name AS student_name,
        u.email AS student_email
      FROM registrations r
      JOIN users u ON r.user_id = u.user_id
-     WHERE r.event_id = ?
+     WHERE r.event_id = ? AND r.status != 'Cancelled'
      ORDER BY r.registration_date DESC`,
     [eventId]
   );

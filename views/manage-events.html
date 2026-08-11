@@ -40,11 +40,11 @@
                     <li><a href="/views/events.html">Events</a></li>
                     <li><a href="/about">About</a></li>
                     <li><a href="/contact">Contact</a></li>
-                    <li><a href="/views/admin-dashboard.html">Dashboard</a></li>
-                    <li><a href="/views/create-event.html">Create Event</a></li>
-                    <li><a href="/views/manage-events.html" class="active">Manage Events</a></li>
-                    <li><a href="/views/attendance-management.html">Attendance</a></li>
-                    <li><a href="/views/login.html" class="btn btn-primary">Logout</a></li>
+                    <li><a href="/admin/dashboard">Dashboard</a></li>
+                    <li><a href="/admin/create-event">Create Event</a></li>
+                    <li><a href="/admin/manage-events" class="active">Manage Events</a></li>
+                    <li><a href="/admin/attendance-management">Attendance</a></li>
+                    <li><a href="#" class="btn btn-primary admin-logout">Logout</a></li>
                 </ul>
             </nav>
         </div>
@@ -57,11 +57,13 @@
         </div>
 
         <div class="filter-bar">
-            <input type="text" class="form-control" placeholder="Search events by name or organizer...">
-            <select class="form-control">
-                <option value="all">All Campuses</option>
-                <option value="sgw">SGW (Downtown)</option>
-                <option value="loyola">Loyola</option>
+            <input type="text" id="manage-events-search" class="form-control" placeholder="Search events by name, category, or organizer...">
+            <select id="manage-events-status-filter" class="form-control">
+                <option value="all">All Statuses</option>
+                <option value="Open">Open</option>
+                <option value="Full">Full</option>
+                <option value="Cancelled">Cancelled</option>
+                <option value="Disabled">Disabled</option>
             </select>
         </div>
 
@@ -72,16 +74,20 @@
                     <thead>
                         <tr>
                             <th>Event Name</th>
-                            <th>Campus</th>
-                            <th>Date & Time</th>
-                            <th>Capacity Status</th>
-                            <th>Current State</th>
+                            <th>Category</th>
+                            <th>Date</th>
+                            <th>Capacity</th>
+                            <th>Registrations</th>
+                            <th>Remaining</th>
+                            <th>Seats Filled</th>
+                            <th>Status</th>
+                            <th>Organizer</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody id="events-table-body">
                         <tr>
-                            <td colspan="6" style="text-align: center;">Loading events... If no events appear, make sure you are signed in as the event organizer.</td>
+                            <td colspan="10" style="text-align: center;">Loading events...</td>
                         </tr>
                     </tbody>
                 </table>

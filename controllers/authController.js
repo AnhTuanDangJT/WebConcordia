@@ -74,12 +74,10 @@ async function registerUser(req, res) {
         switch(role)
         {
             case userModel.studentRole:
-                    redirect = "/api/student/dashboard";
-
+                    redirect = "/student/dashboard";
                 break;
             case userModel.adminRole:
-                    redirect = "/api/admin/dashboard";
-
+                    redirect = "/admin/dashboard";
                 break;
         }
         

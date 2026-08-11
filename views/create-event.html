@@ -61,23 +61,23 @@
                     </li>
 
                     <li>
-                        <a href="/views/admin-dashboard.html">Dashboard</a>
+                        <a href="/admin/dashboard">Dashboard</a>
                     </li>
 
                     <li>
-                        <a href="/views/create-event.html" class="active">Create Event</a>
+                        <a href="/admin/create-event" class="active">Create Event</a>
                     </li>
 
                     <li>
-                        <a href="/views/manage-events.html">Manage Events</a>
+                        <a href="/admin/manage-events">Manage Events</a>
                     </li>
 
                     <li>
-                        <a href="/views/attendance-management.html">Attendance</a>
+                        <a href="/admin/attendance-management">Attendance</a>
                     </li>
 
                     <li>
-                        <a href="/views/login.html" class="btn btn-primary">Logout</a>
+                        <a href="#" class="btn btn-primary admin-logout">Logout</a>
                     </li>
                 </ul>
             </nav>
@@ -104,10 +104,16 @@
                     <label for="category">Category</label>
                     <select id="category" name="category" required>
                         <option value="">Select a category</option>
-                        <option value="Academic">Academic</option>
-                        <option value="Technology">Technology</option>
-                        <option value="Social">Social</option>
-                        <option value="Sports">Sports</option>
+                        <option value="Academic workshops">Academic workshops</option>
+                        <option value="Career events">Career events</option>
+                        <option value="Club activities">Club activities</option>
+                        <option value="Sports events">Sports events</option>
+                        <option value="Cultural events">Cultural events</option>
+                        <option value="Volunteering events">Volunteering events</option>
+                        <option value="Social events">Social events</option>
+                        <option value="Guest lectures">Guest lectures</option>
+                        <option value="Networking events">Networking events</option>
+                        <option value="Other">Other</option>
                     </select>
                 </div>
 
@@ -127,13 +133,8 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="location">Campus Location</label>
-                    <select id="location" name="location" required>
-                        <option value="">Select a location</option>
-                        <option value="SGW">SGW Campus (Downtown)</option>
-                        <option value="Loyola">Loyola Campus</option>
-                        <option value="Online">Online / Virtual</option>
-                    </select>
+                    <label for="location">Location</label>
+                    <input type="text" id="location" name="location" placeholder="e.g. Hall Building, Room 123" required>
                 </div>
 
                 <div class="form-row">
@@ -142,18 +143,17 @@
                         <input type="number" id="capacity" name="capacity" min="1" placeholder="e.g. 50" required>
                     </div>
                     <div class="form-group">
-                        <label for="organizer">Organizer</label>
-                        <input type="text" id="organizer" name="organizer" placeholder="e.g. Computer Science Club" required>
-                    </div>
-                    <div class="form-group">
                         <label for="status">Event Status</label>
                         <select id="status" name="status" required>
-                            <option value="Active">Active / Open</option>
+                            <option value="Open">Open</option>
+                            <option value="Full">Full</option>
                             <option value="Disabled">Disabled</option>
                             <option value="Cancelled">Cancelled</option>
                         </select>
                     </div>
                 </div>
+
+                <p class="form-note">Organizer is automatically set to your admin account.</p>
 
                 <div class="form-group">
                     <label for="description">Event Description</label>
