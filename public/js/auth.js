@@ -9,11 +9,11 @@ const toggleclass = (element, iClass) =>
         element.classList.add(iClass);
 };
 
-async function receiveResponse(response, context, authMessage, setError)
+async function receiveResponse(response, context, authMessage, setError, useData = null)
 {
     if (!response.ok) 
     {
-        const data = await response.json();
+        const data = useData ?? await response.json();
         const errorMessage =
             data.errors?.[0]?.msg ||
             data.message ||
@@ -87,7 +87,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     });
 
                 const responseData = await response.json().catch(() => null);
-                const check = await receiveResponse(response, "log in", authMessage, true);
+                const check = await receiveResponse(response, "log in", authMessage, true, responseData);
                 if(check && responseData?.redirect)
                 {
                     window.location.href = responseData.redirect;
@@ -130,7 +130,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     });
 
                 const responseData = await response.json().catch(() => null);
-                const check = await receiveResponse(response, "register", authMessage, true);
+                const check = await receiveResponse(response, "register", authMessage, true, responseData);
                 if(check)
                 {
                     authMessage.textContent = "Registration successful";
@@ -207,7 +207,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                             const check = await receiveResponse(response, "change password", profilePasswordMessage);
                             if(check)
                             {
-                                console.log("hhhh");
                                 profilePasswordMessage.textContent = "Password changed successfully";
                                 submitDetailsbutton.disabled = true;
                                 setTimeout(() => { window.location.href = "/profile"; }, 1000);
