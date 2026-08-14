@@ -51,6 +51,169 @@
     margin: 10px 0 0 0;
 }
 
+/* --- PAGE HEADERS --- */
+.form-header,
+.page-header {
+    margin-bottom: 24px;
+}
+
+.form-header h1,
+.page-header h1 {
+    margin-bottom: 0.5rem;
+}
+
+.form-header p,
+.page-header p {
+    margin-bottom: 0;
+    color: var(--color-text-light, #667085);
+}
+
+/* --- FORM CARD & EVENT FORM --- */
+.form-card {
+    background-color: var(--color-surface, #ffffff);
+    border: 1px solid var(--color-border, #d9dde3);
+    border-radius: var(--radius-medium, 8px);
+    box-shadow: var(--shadow-small, 0 4px 6px rgba(0, 0, 0, 0.05));
+    padding: 28px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 20px;
+}
+
+.form-card label {
+    display: block;
+    margin-bottom: 0.4rem;
+    font-weight: 700;
+    color: var(--color-text, #20242a);
+}
+
+.form-card input,
+.form-card select,
+.form-card textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--color-border, #d9dde3);
+    border-radius: var(--radius-medium, 8px);
+    background-color: #ffffff;
+    color: var(--color-text, #20242a);
+}
+
+.form-card input:focus,
+.form-card select:focus,
+.form-card textarea:focus {
+    outline: 3px solid rgba(122, 23, 48, 0.15);
+    border-color: var(--color-primary, #7a1730);
+}
+
+.form-card textarea {
+    min-height: 130px;
+    resize: vertical;
+}
+
+.form-note {
+    margin-bottom: 1.25rem;
+    font-size: 0.9rem;
+    color: var(--color-text-light, #667085);
+}
+
+.form-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.form-actions .btn-primary,
+.form-actions .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.25rem;
+    border: 1px solid transparent;
+    border-radius: var(--radius-medium, 8px);
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.form-actions .btn-primary {
+    color: #ffffff;
+    background-color: var(--color-primary, #7a1730);
+}
+
+.form-actions .btn-primary:hover {
+    background-color: var(--color-primary-dark, #581020);
+}
+
+.form-actions .btn-secondary {
+    color: var(--color-primary, #7a1730);
+    background-color: transparent;
+    border-color: var(--color-primary, #7a1730);
+}
+
+.form-actions .btn-secondary:hover {
+    color: #ffffff;
+    background-color: var(--color-primary, #7a1730);
+}
+
+/* --- FILTER BAR, MANAGEMENT CARDS, TABLES --- */
+.filter-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.filter-bar .form-control {
+    flex: 1;
+}
+
+.management-card,
+.recent-activity {
+    background-color: var(--color-surface, #ffffff);
+    border: 1px solid var(--color-border, #d9dde3);
+    border-radius: var(--radius-medium, 8px);
+    box-shadow: var(--shadow-small, 0 4px 6px rgba(0, 0, 0, 0.05));
+    padding: 24px;
+    margin-bottom: 24px;
+}
+
+.recent-activity h2 {
+    margin-bottom: 1rem;
+    font-size: 1.4rem;
+}
+
+.action-buttons,
+.table td:last-child {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+}
+
+.table td button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.4rem 0.75rem;
+    border: 1px solid var(--color-border, #d9dde3);
+    border-radius: var(--radius-small, 6px);
+    background-color: var(--color-surface, #ffffff);
+    color: var(--color-text, #20242a);
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+}
+
+.table td button:hover {
+    border-color: var(--color-primary, #7a1730);
+    color: var(--color-primary, #7a1730);
+}
+
 /* --- MOBILE RESPONSIVE FIXES --- */
 @media (max-width: 768px) {
     .admin-container {
@@ -89,6 +252,29 @@
 
     .action-buttons .btn {
         width: 100%;
+    }
+
+    .filter-bar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .form-actions .btn-primary,
+    .form-actions .btn-secondary,
+    .table td button {
+        width: 100%;
+    }
+
+    .action-buttons,
+    .table td:last-child {
+        flex-direction: column;
+        align-items: stretch;
+        width: 100%;
+    }
+
+    .management-card,
+    .recent-activity {
+        padding: 16px;
     }
 }
 
@@ -144,7 +330,34 @@
     background-color: #ffffff;
 }
 
-/* --- ATTENDANCE BADGES --- */
+/* --- STATUS BADGES --- */
+.status-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 9999px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    background-color: #eeeeF2;
+    color: var(--color-text, #20242a);
+}
+
+.status-badge.open,
+.status-badge.registered {
+    background-color: #d1fae5;
+    color: #065f46;
+}
+
+.status-badge.full {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+.status-badge.cancelled,
+.status-badge.disabled {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+
 .status-badge.attended {
     background-color: #d1fae5;
     color: #065f46;
